@@ -10,7 +10,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
-class BlockBreakListener : Listener {
+class SaltOreListener : Listener {
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
         val block = event.block
