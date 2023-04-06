@@ -6,6 +6,8 @@ class Saltomaru : JavaPlugin() {
     override fun onEnable() {
         getLogger().info("Hello world!");
         server.pluginManager.registerEvents(SphereGenerator(), this)
+        server.pluginManager.registerEvents(BlockBreakListener(),this)
+
     }
 
     override fun onDisable() {
