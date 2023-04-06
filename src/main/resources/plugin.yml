@@ -1,0 +1,4 @@
+name: saltomaru
+version: '${version}'
+main: com.cocahonka.saltomaru.Saltomaru
+api-version: 1.19
