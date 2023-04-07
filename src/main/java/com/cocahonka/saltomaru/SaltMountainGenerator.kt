@@ -1,39 +1,117 @@
 package com.cocahonka.saltomaru
 
-import org.bukkit.Chunk
+import org.bukkit.Bukkit.getLogger
+import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.World
+import org.bukkit.block.Biome
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 import org.bukkit.generator.BlockPopulator
-import java.util.Random
+import org.bukkit.generator.LimitedRegion
+import org.bukkit.generator.WorldInfo
+import java.util.*
 import kotlin.math.sqrt
 
 class SaltMountainGenerator : BlockPopulator() {
 
-    override fun populate(world: World, random: Random, chunk: Chunk) {
+    companion object {
+        private const val CHANCE_TO_SPAWN = 0.08
+        private const val MEDIUM_MOUNTAIN_CHANCE = 0.3
+        private const val LARGE_MOUNTAIN_CHANCE = 0.1
+        private const val QUARTZ_CHANCE = 0.4
+        private const val TILT_FACTOR = 0.4
+        private const val MAX_HEIGHT_SPAWN = 200
+        private const val MIN_HEIGHT_SPAWN = 40
+        private const val MAX_HEIGHT_DIFFERENCE = 4
+    }
+
+    private val validGroundBiomes = listOf(
+        Biome.BEACH,
+        Biome.SNOWY_BEACH,
+        Biome.SNOWY_SLOPES,
+        Biome.WINDSWEPT_HILLS,
+    )
+
+    private val validOceanBiomes = listOf(
+        Biome.WARM_OCEAN,
+        Biome.LUKEWARM_OCEAN,
+    )
+
+    private val allValidBiomes = validGroundBiomes + validOceanBiomes
+
+    override fun populate(
+        worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, limitedRegion: LimitedRegion
+    ) {
         if (random.nextDouble() < CHANCE_TO_SPAWN) {
-            val x = random.nextInt(16) + chunk.x * 16
-            val z = random.nextInt(16) + chunk.z * 16
-            val y = world.getHighestBlockYAt(x, z) - 1 - 4
 
-            val startBlock = world.getBlockAt(x, y, z)
+            val location = getStructureValidLocation(chunkX, chunkZ, limitedRegion)
+            if (location == null || !limitedRegion.isInRegion(location)) {
+                return
+            }
 
-            if (startBlock.type != Material.WATER) {
+            val currentBiome = limitedRegion.getBiome(location)
+            if (!allValidBiomes.contains(currentBiome)) {
+                return
+            }
+
+            val startBlockData = limitedRegion.getBlockData(location)
+
+            if (startBlockData.material != Material.WATER) {
                 val mountainSize = when {
-                    random.nextDouble() < LARGE_MOUNTAIN_CHANCE -> 3
+                    (random.nextDouble() < LARGE_MOUNTAIN_CHANCE) && validOceanBiomes.contains(currentBiome) -> 3
                     random.nextDouble() < MEDIUM_MOUNTAIN_CHANCE -> 2
                     else -> 1
                 }
 
-                generateSaltMountain(startBlock, mountainSize, random)
+                generateSaltMountain(limitedRegion, location, mountainSize, random)
             }
         }
     }
 
-    private fun generateSaltMountain(startBlock: org.bukkit.block.Block, mountainSize: Int, random: Random) {
-        val height = 6 * mountainSize + random.nextInt(3) + 4
+    private fun getStructureValidLocation(
+        chunkX: Int,
+        chunkZ: Int,
+        limitedRegion: LimitedRegion,
+    ): Location? {
+        var highestY = MIN_HEIGHT_SPAWN
+
+        for (x in 0..15) {
+            for (z in 0..15) {
+                var currentY = MAX_HEIGHT_SPAWN
+                while (currentY >= MIN_HEIGHT_SPAWN) {
+                    val currentBlock = limitedRegion.getBlockData(chunkX * 16 + x, currentY, chunkZ * 16 + z)
+                    if (currentBlock.material.isSolid && !currentBlock.material.isBurnable) {
+                        break
+                    }
+                    currentY--
+                }
+
+                if (currentY > highestY) {
+                    highestY = currentY
+                }
+
+                if (highestY - currentY <= MAX_HEIGHT_DIFFERENCE) {
+                    val yAverage = ((highestY + currentY) / 2) - 4
+                    return Location(
+                        null,
+                        (chunkX * 16 + x).toDouble(),
+                        yAverage.toDouble(),
+                        (chunkZ * 16 + z).toDouble(),
+                    )
+                }
+            }
+        }
+        return null
+    }
+
+    private fun generateSaltMountain(
+        limitedRegion: LimitedRegion,
+        location: Location,
+        mountainSize: Int,
+        random: Random,
+    ) {
+        val height = 3 * mountainSize + random.nextInt(3) + 4
         val baseRadius = 2 * mountainSize + random.nextInt(2) + 1
 
         val tiltDirectionX = random.nextDouble() * 2 - 1
@@ -47,21 +125,20 @@ class SaltMountainGenerator : BlockPopulator() {
                     if (distance <= currentRadius + random.nextDouble()) {
                         val tiltedX = x + (tiltDirectionX * y * TILT_FACTOR).toInt()
                         val tiltedZ = z + (tiltDirectionZ * y * TILT_FACTOR).toInt()
-                        val block = startBlock.getRelative(tiltedX, y, tiltedZ)
-//                        val belowBlock = startBlock.getRelative(tiltedX, y - 1, tiltedZ)
-
-                        if (block.type == Material.AIR || block.type == Material.WATER) {
-                            val blockData = getRandomBlockData(random)
-                            if (blockData is Directional) {
-                                blockData.facing = BlockFace.NORTH
+                        val newLocation = Location(null, location.x + tiltedX, location.y + y, location.z + tiltedZ)
+                        if (limitedRegion.isInRegion(newLocation)) {
+                            val blockData = limitedRegion.getBlockData(newLocation)
+                            if (blockData.material == Material.AIR || blockData.material == Material.WATER || blockData.material == Material.SNOW) {
+                                val mountainBlockData = getRandomBlockData(random)
+                                if (mountainBlockData is Directional) {
+                                    mountainBlockData.facing = BlockFace.NORTH
+                                }
+                                limitedRegion.setBlockData(newLocation, mountainBlockData)
                             }
-                            block.blockData = blockData
                         }
 
-//                        if (belowBlock.type == Material.AIR) {
-//                            belowBlock.type = Material.MOSS_BLOCK
-//                        }
                     }
+
                 }
             }
         }
@@ -75,11 +152,5 @@ class SaltMountainGenerator : BlockPopulator() {
         }
     }
 
-    companion object {
-        private const val CHANCE_TO_SPAWN = 0.03
-        private const val MEDIUM_MOUNTAIN_CHANCE = 0.3
-        private const val LARGE_MOUNTAIN_CHANCE = 0.1
-        private const val QUARTZ_CHANCE = 0.4
-        private const val TILT_FACTOR = 0.4
-    }
+
 }
