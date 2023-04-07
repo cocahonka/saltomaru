@@ -19,7 +19,7 @@ class SaltMountainGenerator : BlockPopulator() {
         private const val CHANCE_TO_SPAWN = 0.08
         private const val MEDIUM_MOUNTAIN_CHANCE = 0.3
         private const val LARGE_MOUNTAIN_CHANCE = 0.1
-        private const val QUARTZ_CHANCE = 0.4
+        private const val CALCITE_CHANCE = 0.4
         private const val TILT_FACTOR = 0.4
         private const val MAX_HEIGHT_SPAWN = 200
         private const val MIN_HEIGHT_SPAWN = 40
@@ -145,8 +145,8 @@ class SaltMountainGenerator : BlockPopulator() {
     }
 
     private fun getRandomBlockData(random: Random): BlockData {
-        return if (random.nextDouble() < QUARTZ_CHANCE) {
-            Material.QUARTZ_BLOCK.createBlockData()
+        return if (random.nextDouble() < CALCITE_CHANCE) {
+            Material.CALCITE.createBlockData()
         } else {
             Material.WHITE_GLAZED_TERRACOTTA.createBlockData()
         }
