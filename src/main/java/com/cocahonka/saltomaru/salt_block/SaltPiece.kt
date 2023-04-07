@@ -11,14 +11,15 @@ class SaltPiece {
         const val LORE = "Salt piece"
         val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
         val nameComponent = Component.text(DISPLAY_NAME)
+        val material = Material.RABBIT_FOOT
 
-        internal fun isSaltPiece(item: ItemStack): Boolean {
+        fun isSaltPieceItem(item: ItemStack): Boolean {
             val meta = item.itemMeta
             return meta.hasLore() && meta.lore()?.contains(loreComponent) ?: false
         }
 
-        fun getNewItemStack(n: Int = 1): ItemStack {
-            val saltPiece = ItemStack(Material.RABBIT_FOOT, n)
+        fun getNewItemStack(amount: Int = 1): ItemStack {
+            val saltPiece = ItemStack(material, amount)
             val meta = saltPiece.itemMeta
 
             meta.lore(listOf(loreComponent))

@@ -14,15 +14,16 @@ class SaltHelmet(private val recipeKey: NamespacedKey) {
         const val DISPLAY_NAME = "Солевая шапка"
         const val LORE = "Salt helmet"
         val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
-        val nameComponent = Component.text(SaltBlock.DISPLAY_NAME)
+        val nameComponent = Component.text(DISPLAY_NAME)
+        val material = Material.LEATHER_HELMET
 
-        fun isSaltHelmet(item: ItemStack): Boolean {
+        fun isSaltHelmetItem(item: ItemStack): Boolean {
             val meta = item.itemMeta
             return meta.hasLore() && meta.lore()?.contains(loreComponent) ?: false
         }
 
-        fun getNewItemStack(n: Int = 1): ItemStack {
-            val saltHelmet = ItemStack(Material.LEATHER_HELMET, n)
+        fun getNewItemStack(amount: Int = 1): ItemStack {
+            val saltHelmet = ItemStack(material, amount)
             val meta = saltHelmet.itemMeta
 
             meta.addEnchant(Enchantment.OXYGEN, 1, true)
@@ -35,12 +36,12 @@ class SaltHelmet(private val recipeKey: NamespacedKey) {
         }
     }
 
-    fun registerSaltHelmetRecipe() {
+    internal fun registerSaltHelmetRecipe() {
         val saltHelmet = getNewItemStack()
 
         val recipe = ShapedRecipe(recipeKey, saltHelmet)
         recipe.shape("XXX", "X X")
-        recipe.setIngredient('X', Material.RABBIT_FOOT)
+        recipe.setIngredient('X', SaltPiece.material)
 
         Bukkit.addRecipe(recipe)
     }

@@ -15,17 +15,24 @@ class SaltBlock {
         const val LORE = "Salt block"
         val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
         val nameComponent = Component.text(DISPLAY_NAME)
+        val material = Material.WHITE_GLAZED_TERRACOTTA
+        val facing = BlockFace.NORTH
 
         fun isSaltBlock(block: Block): Boolean {
-            if (block.type != Material.WHITE_GLAZED_TERRACOTTA) {
+            if (block.type != material) {
                 return false
             }
 
             val blockData = block.blockData
-            return blockData is Directional && blockData.facing == BlockFace.NORTH
+            return blockData is Directional && blockData.facing == facing
         }
 
-        fun getRandomSaltParticles(fortuneLevel: Int): Int {
+        fun isSaltBlockItem(item: ItemStack): Boolean {
+            val meta = item.itemMeta
+            return meta.hasLore() && meta.lore()?.contains(loreComponent) ?: false
+        }
+
+        fun getRandomSaltPiecesAmount(fortuneLevel: Int): Int {
             val baseAmount = (1..3).random()
             val extra = if (fortuneLevel > 0) (0..fortuneLevel).random() else 0
             return baseAmount + extra
@@ -35,8 +42,8 @@ class SaltBlock {
             return Sound.BLOCK_BONE_BLOCK_BREAK
         }
 
-        fun getNewItemStack(n: Int = 1): ItemStack {
-            val saltBlock = ItemStack(Material.WHITE_GLAZED_TERRACOTTA, n)
+        fun getNewItemStack(amount: Int = 1): ItemStack {
+            val saltBlock = ItemStack(material, amount)
             val meta = saltBlock.itemMeta
 
             meta.lore(listOf(loreComponent))
@@ -48,8 +55,8 @@ class SaltBlock {
         }
 
         fun createBlockData() : Directional {
-            val blockData = Material.WHITE_GLAZED_TERRACOTTA.createBlockData() as Directional
-            blockData.facing = BlockFace.NORTH
+            val blockData = material.createBlockData() as Directional
+            blockData.facing = facing
             return blockData
         }
     }

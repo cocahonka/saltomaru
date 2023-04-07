@@ -1,6 +1,7 @@
 package com.cocahonka.saltomaru.salt_block.listeners
 
 import com.cocahonka.saltomaru.salt_block.SaltBlock
+import com.cocahonka.saltomaru.salt_block.SaltPiece
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.event.EventHandler
@@ -17,19 +18,20 @@ class SaltBlockExplosionListener : Listener {
             if (SaltBlock.isSaltBlock(block)) {
                 block.type = Material.AIR
                 block.world.spawnParticle(
-                    Particle.ITEM_CRACK,
+                    Particle.BLOCK_CRACK,
                     0.5,
                     0.5,
                     0.5,
-                    120, // Количество частиц
-                    3.5, 3.5, 5.0, // Размер разброса частиц
-                    0.5, // Скорость частиц
-                    ItemStack(Material.SUGAR) // Тип частицы (частицы соли)
+                    120,
+                    3.5, 3.5, 5.0,
+                    0.5,
+                    ItemStack(Material.SUGAR)
                 )
 
-                val sugarAmount = (1..3).random()
-                val sugar = ItemStack(Material.RABBIT_FOOT, sugarAmount)
-                block.world.dropItemNaturally(block.location, sugar)
+                val saltPiecesAmount = (1..3).random()
+                val saltPieces = SaltPiece.getNewItemStack(saltPiecesAmount)
+
+                block.world.dropItemNaturally(block.location, saltPieces)
 
             }
         }

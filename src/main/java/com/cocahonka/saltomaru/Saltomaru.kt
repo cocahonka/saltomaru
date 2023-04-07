@@ -20,7 +20,8 @@ class Saltomaru : JavaPlugin() {
         server.pluginManager.registerEvents(SaltBlockPlaceListener(),this)
 
         val generator = SaltMountainGenerator()
-        server.worlds.forEach { world -> world.populators.add(generator) }
+        val overworld = server.worlds[0]
+        overworld.populators.add(generator)
 
     }
 

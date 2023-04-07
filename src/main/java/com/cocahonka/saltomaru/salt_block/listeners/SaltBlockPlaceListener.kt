@@ -1,9 +1,6 @@
 package com.cocahonka.saltomaru.salt_block.listeners
 
 import com.cocahonka.saltomaru.salt_block.SaltBlock
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.event.EventHandler
@@ -12,22 +9,21 @@ import org.bukkit.event.block.BlockPlaceEvent
 
 class SaltBlockPlaceListener : Listener {
 
-    private val availableFaces = listOf(BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH)
+    // private val availableFaces = listOf(BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH)
+    private val defaultBlockFace = BlockFace.EAST
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
-        if (event.block.type == Material.WHITE_GLAZED_TERRACOTTA) {
+        if (event.block.type == SaltBlock.material) {
             val item = event.itemInHand
-            val lore = item.itemMeta.lore()
 
-            if (lore != null && lore.contains(Component.text(SaltBlock.LORE).color(NamedTextColor.GRAY))) {
-                val blockData = event.block.blockData as Directional
-                blockData.facing = BlockFace.NORTH
+            if (SaltBlock.isSaltBlockItem(item)) {
+                val blockData = SaltBlock.createBlockData()
                 event.block.blockData = blockData
             } else {
                 val blockData = event.block.blockData as Directional
-                if(blockData.facing == BlockFace.NORTH) {
-                    blockData.facing = availableFaces.random()
+                if(blockData.facing == SaltBlock.facing) {
+                    blockData.facing = defaultBlockFace
                     event.block.blockData = blockData
                 }
             }
