@@ -1,5 +1,6 @@
 package com.cocahonka.saltomaru.generators
 
+import com.cocahonka.saltomaru.salt_block.SaltBlock
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome
@@ -40,7 +41,7 @@ class SaltMountainGenerator : BlockPopulator() {
     private val allValidBiomes = validGroundBiomes + validOceanBiomes
 
     override fun populate(
-        worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, limitedRegion: LimitedRegion
+        worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, limitedRegion: LimitedRegion,
     ) {
         if (random.nextDouble() < CHANCE_TO_SPAWN) {
 
@@ -129,9 +130,6 @@ class SaltMountainGenerator : BlockPopulator() {
                             val blockData = limitedRegion.getBlockData(newLocation)
                             if (blockData.material == Material.AIR || blockData.material == Material.WATER || blockData.material == Material.SNOW) {
                                 val mountainBlockData = getRandomBlockData(random)
-                                if (mountainBlockData is Directional) {
-                                    mountainBlockData.facing = BlockFace.NORTH
-                                }
                                 limitedRegion.setBlockData(newLocation, mountainBlockData)
                             }
                         }
@@ -147,7 +145,7 @@ class SaltMountainGenerator : BlockPopulator() {
         return if (random.nextDouble() < CALCITE_CHANCE) {
             Material.CALCITE.createBlockData()
         } else {
-            Material.WHITE_GLAZED_TERRACOTTA.createBlockData()
+            SaltBlock.createBlockData()
         }
     }
 
