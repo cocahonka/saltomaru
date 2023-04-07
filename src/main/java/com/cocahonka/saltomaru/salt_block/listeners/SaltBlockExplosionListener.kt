@@ -1,8 +1,8 @@
-package com.cocahonka.saltomaru.salt_block
+package com.cocahonka.saltomaru.salt_block.listeners
 
+import com.cocahonka.saltomaru.salt_block.SaltBlock
 import org.bukkit.Material
 import org.bukkit.Particle
-import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityExplodeEvent
@@ -28,7 +28,7 @@ class SaltBlockExplosionListener : Listener {
                 )
 
                 val sugarAmount = (1..3).random()
-                val sugar = ItemStack(Material.SUGAR, sugarAmount)
+                val sugar = ItemStack(Material.RABBIT_FOOT, sugarAmount)
                 block.world.dropItemNaturally(block.location, sugar)
 
             }

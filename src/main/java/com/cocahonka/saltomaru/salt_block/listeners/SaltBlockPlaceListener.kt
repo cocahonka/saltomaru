@@ -1,8 +1,8 @@
-package com.cocahonka.saltomaru.salt_block
+package com.cocahonka.saltomaru.salt_block.listeners
 
+import com.cocahonka.saltomaru.salt_block.SaltBlock
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Bukkit.getLogger
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional

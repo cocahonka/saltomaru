@@ -1,14 +1,20 @@
 package com.cocahonka.saltomaru
 
 import com.cocahonka.saltomaru.generators.SaltMountainGenerator
-import com.cocahonka.saltomaru.salt_block.SaltBlockBreakListener
-import com.cocahonka.saltomaru.salt_block.SaltBlockExplosionListener
-import com.cocahonka.saltomaru.salt_block.SaltBlockPlaceListener
+import com.cocahonka.saltomaru.salt_block.SaltHelmet
+import com.cocahonka.saltomaru.salt_block.listeners.*
+import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
 class Saltomaru : JavaPlugin() {
+
+    private val saltHelmetKey = NamespacedKey(this, "salt_helmet")
     override fun onEnable() {
-        getLogger().info("Saltomaru by cocahonka!");
+        getLogger().info("Saltomaru by cocahonka!")
+
+        SaltHelmet(saltHelmetKey).registerSaltHelmetRecipe()
+
+        server.pluginManager.registerEvents(SaltCraftingListener(saltHelmetKey),this)
         server.pluginManager.registerEvents(SaltBlockBreakListener(),this)
         server.pluginManager.registerEvents(SaltBlockExplosionListener(),this)
         server.pluginManager.registerEvents(SaltBlockPlaceListener(),this)
