@@ -6,7 +6,6 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 import org.bukkit.inventory.ItemStack
 
@@ -37,7 +36,15 @@ class SaltBlock {
         }
 
         fun getNewItemStack(n: Int = 1): ItemStack {
-            return ItemStack(Material.WHITE_GLAZED_TERRACOTTA, n)
+            val saltBlock = ItemStack(Material.WHITE_GLAZED_TERRACOTTA, n)
+            val meta = saltBlock.itemMeta
+
+            meta.lore(listOf(loreComponent))
+            meta.displayName(nameComponent)
+
+            saltBlock.itemMeta = meta
+
+            return saltBlock
         }
 
         fun createBlockData() : Directional {
