@@ -1,6 +1,5 @@
-package com.cocahonka.saltomaru
+package com.cocahonka.saltomaru.generators
 
-import org.bukkit.Bukkit.getLogger
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome

@@ -1,13 +1,13 @@
 package com.cocahonka.saltomaru
 
-import org.bukkit.WorldCreator
-import org.bukkit.generator.ChunkGenerator
+import com.cocahonka.saltomaru.generators.SaltMountainGenerator
+import com.cocahonka.saltomaru.salt_block.SaltBlockBreakListener
 import org.bukkit.plugin.java.JavaPlugin
 
 class Saltomaru : JavaPlugin() {
     override fun onEnable() {
         getLogger().info("Saltomaru by cocahonka!");
-        server.pluginManager.registerEvents(SaltOreListener(),this)
+        server.pluginManager.registerEvents(SaltBlockBreakListener(),this)
 
         val generator = SaltMountainGenerator()
         server.worlds.forEach { world -> world.populators.add(generator) }
