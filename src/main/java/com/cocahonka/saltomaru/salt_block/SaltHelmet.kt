@@ -13,18 +13,30 @@ class SaltHelmet(private val recipeKey: NamespacedKey) {
     companion object {
         const val DISPLAY_NAME = "Солевая шапка"
         const val LORE = "Salt helmet"
-        internal val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
-        internal fun isSaltHelmet(item: ItemStack): Boolean {
+        val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
+        val nameComponent = Component.text(SaltBlock.DISPLAY_NAME)
+
+        fun isSaltHelmet(item: ItemStack): Boolean {
             val meta = item.itemMeta
             return meta.hasLore() && meta.lore()?.contains(loreComponent) ?: false
         }
+
+        fun getNewItemStack(n: Int = 1): ItemStack {
+            val saltHelmet = ItemStack(Material.LEATHER_HELMET, n)
+            val meta = saltHelmet.itemMeta
+
+            meta.addEnchant(Enchantment.OXYGEN, 1, true)
+            meta.lore(listOf(loreComponent))
+            meta.displayName(nameComponent)
+
+            saltHelmet.itemMeta = meta
+
+            return saltHelmet
+        }
     }
 
-    internal fun registerSaltHelmetRecipe() {
-        val saltHelmet = ItemStack(Material.LEATHER_HELMET)
-        val meta = saltHelmet.itemMeta
-        meta.addEnchant(Enchantment.OXYGEN, 1, true)
-        saltHelmet.itemMeta = meta
+    fun registerSaltHelmetRecipe() {
+        val saltHelmet = getNewItemStack()
 
         val recipe = ShapedRecipe(recipeKey, saltHelmet)
         recipe.shape("XXX", "X X")

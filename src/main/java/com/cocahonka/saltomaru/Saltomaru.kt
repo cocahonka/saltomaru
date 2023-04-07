@@ -21,6 +21,7 @@ class Saltomaru : JavaPlugin() {
 
         val generator = SaltMountainGenerator()
         server.worlds.forEach { world -> world.populators.add(generator) }
+
     }
 
     override fun onDisable() {
