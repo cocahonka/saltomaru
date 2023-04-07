@@ -10,7 +10,7 @@ class Saltomaru : JavaPlugin() {
 
     private val saltHelmetKey = NamespacedKey(this, "salt_helmet")
     override fun onEnable() {
-        getLogger().info("Saltomaru by cocahonka!")
+        getLogger().info("\u001B[32m" + "Saltomaru by cocahonka!" +  "\u001B[0m")
 
         SaltHelmet(saltHelmetKey).registerSaltHelmetRecipe()
 
