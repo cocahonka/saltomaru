@@ -18,7 +18,7 @@ class SaltBlockExplosionListener : Listener {
             if (SaltBlock.isSaltBlock(block)) {
                 block.type = Material.AIR
                 block.world.spawnParticle(
-                    Particle.BLOCK_CRACK,
+                    Particle.ITEM_CRACK,
                     0.5,
                     0.5,
                     0.5,
