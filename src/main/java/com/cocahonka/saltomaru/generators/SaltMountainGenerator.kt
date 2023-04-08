@@ -11,6 +11,8 @@ import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 class SaltMountainGenerator : BlockPopulator() {
@@ -22,7 +24,7 @@ class SaltMountainGenerator : BlockPopulator() {
         private const val CALCITE_CHANCE = 0.4
         private const val TILT_FACTOR = 0.4
         private const val MAX_HEIGHT_SPAWN = 200
-        private const val MIN_HEIGHT_SPAWN = 40
+        private const val MIN_HEIGHT_SPAWN = 30
         private const val MAX_HEIGHT_DIFFERENCE = 4
     }
 
@@ -36,6 +38,7 @@ class SaltMountainGenerator : BlockPopulator() {
     private val validOceanBiomes = listOf(
         Biome.WARM_OCEAN,
         Biome.LUKEWARM_OCEAN,
+        Biome.DEEP_LUKEWARM_OCEAN,
     )
 
     private val allValidBiomes = validGroundBiomes + validOceanBiomes
@@ -117,29 +120,56 @@ class SaltMountainGenerator : BlockPopulator() {
         val tiltDirectionX = random.nextDouble() * 2 - 1
         val tiltDirectionZ = random.nextDouble() * 2 - 1
 
+        // Генерация нижней части горы
+        for (y in -baseRadius  until 0) {
+            val currentRadius = (baseRadius * (1 - (y.toDouble() / baseRadius).pow(2))).toInt()
+            generateMountainLayer(limitedRegion, location, currentRadius, y, tiltDirectionX, tiltDirectionZ, random)
+        }
+
+        // Генерация верхней части горы
         for (y in 0 until height) {
             val currentRadius = baseRadius - (y.toDouble() / height * baseRadius).toInt()
-            for (x in -currentRadius..currentRadius) {
-                for (z in -currentRadius..currentRadius) {
-                    val distance = sqrt((x * x + z * z).toDouble())
-                    if (distance <= currentRadius + random.nextDouble()) {
-                        val tiltedX = x + (tiltDirectionX * y * TILT_FACTOR).toInt()
-                        val tiltedZ = z + (tiltDirectionZ * y * TILT_FACTOR).toInt()
-                        val newLocation = Location(null, location.x + tiltedX, location.y + y, location.z + tiltedZ)
-                        if (limitedRegion.isInRegion(newLocation)) {
-                            val blockData = limitedRegion.getBlockData(newLocation)
-                            if (blockData.material == Material.AIR || blockData.material == Material.WATER || blockData.material == Material.SNOW) {
-                                val mountainBlockData = getRandomBlockData(random)
-                                limitedRegion.setBlockData(newLocation, mountainBlockData)
-                            }
+            generateMountainLayer(limitedRegion, location, currentRadius, y, tiltDirectionX, tiltDirectionZ, random)
+        }
+    }
+
+    private fun generateMountainLayer(
+        limitedRegion: LimitedRegion,
+        location: Location,
+        currentRadius: Int,
+        y: Int,
+        tiltDirectionX: Double,
+        tiltDirectionZ: Double,
+        random: Random
+    ) {
+        for (x in -currentRadius..currentRadius) {
+            for (z in -currentRadius..currentRadius) {
+                val distance = sqrt((x * x + z * z).toDouble())
+                if (distance <= currentRadius + random.nextDouble()) {
+                    val tiltedX = x + (tiltDirectionX * y * TILT_FACTOR).toInt()
+                    val tiltedZ = z + (tiltDirectionZ * y * TILT_FACTOR).toInt()
+                    val newLocation = Location(
+                        null,
+                        location.x + tiltedX,
+                        location.y + y,
+                        location.z + tiltedZ,
+                    )
+                    if (limitedRegion.isInRegion(newLocation)) {
+                        val blockData = limitedRegion.getBlockData(newLocation)
+                        if (
+                            blockData.material == Material.AIR ||
+                            blockData.material == Material.WATER ||
+                            blockData.material == Material.SNOW
+                        ) {
+                            val mountainBlockData = getRandomBlockData(random)
+                            limitedRegion.setBlockData(newLocation, mountainBlockData)
                         }
-
                     }
-
                 }
             }
         }
     }
+
 
     private fun getRandomBlockData(random: Random): BlockData {
         return if (random.nextDouble() < CALCITE_CHANCE) {
