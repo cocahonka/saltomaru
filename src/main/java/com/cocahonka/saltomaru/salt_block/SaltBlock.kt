@@ -13,6 +13,7 @@ class SaltBlock {
     companion object {
         const val DISPLAY_NAME = "Солевой блок"
         const val LORE = "Salt block"
+        const val customModelData = 1
         val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
         val nameComponent = Component.text(DISPLAY_NAME)
         val material = Material.WHITE_GLAZED_TERRACOTTA
@@ -48,6 +49,7 @@ class SaltBlock {
 
             meta.lore(listOf(loreComponent))
             meta.displayName(nameComponent)
+            meta.setCustomModelData(customModelData)
 
             saltBlock.itemMeta = meta
 

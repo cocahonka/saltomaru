@@ -9,9 +9,11 @@ class SaltPiece {
     companion object {
         const val DISPLAY_NAME = "Кусочек соли"
         const val LORE = "Salt piece"
+        const val customModelData = 1
         val loreComponent = Component.text(LORE).color(NamedTextColor.GRAY)
         val nameComponent = Component.text(DISPLAY_NAME)
         val material = Material.RABBIT_FOOT
+
 
         fun isSaltPieceItem(item: ItemStack): Boolean {
             val meta = item.itemMeta
@@ -22,6 +24,7 @@ class SaltPiece {
             val saltPiece = ItemStack(material, amount)
             val meta = saltPiece.itemMeta
 
+            meta.setCustomModelData(customModelData)
             meta.lore(listOf(loreComponent))
             meta.displayName(nameComponent)
 
