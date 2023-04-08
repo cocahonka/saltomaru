@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "minecraft:block/salt_block"
+        }
+    }
+}
