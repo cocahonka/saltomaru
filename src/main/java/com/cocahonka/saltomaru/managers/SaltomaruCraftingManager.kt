@@ -1,19 +1,19 @@
-package com.cocahonka.saltomaru.crafting
+package com.cocahonka.saltomaru.managers
 
-import com.cocahonka.saltomaru.salt.gear.SaltHelmet
-import org.bukkit.NamespacedKey
+import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
+import com.google.common.collect.ImmutableList
 import org.bukkit.entity.Player
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 
-class SaltCrafting(plugin: Plugin) {
+class SaltomaruCraftingManager {
 
-    private val saltHelmetKey = NamespacedKey(plugin, "salt_helmet")
-    val saltHelmet = SaltHelmet(saltHelmetKey)
+    private val items = mutableListOf<SaltomaruItemCraftable>()
+    val saltomaruItems: ImmutableList<SaltomaruItemCraftable>
+        get() = ImmutableList.copyOf(items)
 
-    init {
-        saltHelmet.registerSaltHelmetRecipe()
+    fun addSaltomaruItem(item: SaltomaruItemCraftable){
+        items.add(item)
     }
 
     companion object {

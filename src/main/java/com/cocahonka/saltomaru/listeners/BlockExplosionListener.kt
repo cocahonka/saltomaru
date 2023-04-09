@@ -1,7 +1,7 @@
 package com.cocahonka.saltomaru.listeners
 
-import com.cocahonka.saltomaru.salt.SaltBlock
-import com.cocahonka.saltomaru.salt.SaltPiece
+import com.cocahonka.saltomaru.salt.block.SaltBlock
+import com.cocahonka.saltomaru.salt.item.SaltPiece
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.event.EventHandler
@@ -9,13 +9,17 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.inventory.ItemStack
 
-class SaltBlockExplosionListener : Listener {
+class BlockExplosionListener : Listener {
+
+    // TODO REMOVE HARDCODE
+    private val saltPiece = SaltPiece()
+    private val saltBlock = SaltBlock()
 
     @EventHandler
     fun onEntityExplode(event: EntityExplodeEvent) {
         val brokenBlocks = event.blockList()
         for (block in brokenBlocks) {
-            if (SaltBlock.isSaltBlock(block)) {
+            if (saltBlock.isValidBlock(block)) {
                 block.type = Material.AIR
                 block.world.spawnParticle(
                     Particle.ITEM_CRACK,
@@ -29,7 +33,7 @@ class SaltBlockExplosionListener : Listener {
                 )
 
                 val saltPiecesAmount = (1..3).random()
-                val saltPieces = SaltPiece.getNewItemStack(saltPiecesAmount)
+                val saltPieces = saltPiece.getNewItemStack(saltPiecesAmount)
 
                 block.world.dropItemNaturally(block.location, saltPieces)
 

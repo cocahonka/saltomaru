@@ -1,6 +1,6 @@
 package com.cocahonka.saltomaru.generators
 
-import com.cocahonka.saltomaru.salt.SaltBlock
+import com.cocahonka.saltomaru.salt.block.SaltBlock
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome
@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class SaltMountainGenerator : BlockPopulator() {
+class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator() {
 
     companion object {
         private const val CHANCE_TO_SPAWN = 0.08
@@ -172,7 +172,7 @@ class SaltMountainGenerator : BlockPopulator() {
         return if (random.nextDouble() < CALCITE_CHANCE) {
             Material.CALCITE.createBlockData()
         } else {
-            SaltBlock.createBlockData()
+            saltBlock.createBlockData()
         }
     }
 
