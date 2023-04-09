@@ -1,4 +1,4 @@
-package com.cocahonka.saltomaru.salt_block
+package com.cocahonka.saltomaru.salt
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

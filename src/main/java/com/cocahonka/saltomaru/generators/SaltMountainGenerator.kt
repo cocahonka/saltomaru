@@ -1,17 +1,14 @@
 package com.cocahonka.saltomaru.generators
 
-import com.cocahonka.saltomaru.salt_block.SaltBlock
+import com.cocahonka.saltomaru.salt.SaltBlock
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome
-import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
-import org.bukkit.block.data.Directional
 import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 

@@ -1,6 +1,6 @@
-package com.cocahonka.saltomaru.salt_block.listeners
+package com.cocahonka.saltomaru.listeners
 
-import com.cocahonka.saltomaru.salt_block.SaltBlock
+import com.cocahonka.saltomaru.salt.SaltBlock
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.event.EventHandler

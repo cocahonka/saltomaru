@@ -1,7 +1,7 @@
-package com.cocahonka.saltomaru.salt_block.listeners
+package com.cocahonka.saltomaru.listeners
 
-import com.cocahonka.saltomaru.salt_block.SaltBlock
-import com.cocahonka.saltomaru.salt_block.SaltPiece
+import com.cocahonka.saltomaru.salt.SaltBlock
+import com.cocahonka.saltomaru.salt.SaltPiece
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
