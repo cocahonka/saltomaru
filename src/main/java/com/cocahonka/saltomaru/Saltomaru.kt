@@ -9,6 +9,7 @@ import com.cocahonka.saltomaru.salt.item.SaltHelmet
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import org.bukkit.plugin.java.JavaPlugin
 
+@Suppress("unused")
 class Saltomaru : JavaPlugin() {
 
     private val craftingManager = SaltomaruCraftingManager()
@@ -18,10 +19,11 @@ class Saltomaru : JavaPlugin() {
         getLogger().info("\u001B[32m" + "Saltomaru by cocahonka!" +  "\u001B[0m")
 
         val saltPiece = SaltPiece()
-        val saltBlock = SaltBlock(saltPiece)
+        val saltBlock = SaltBlock(this, saltPiece)
         val saltHelmet = SaltHelmet(this, saltPiece)
 
         craftingManager.addSaltomaruItem(saltHelmet)
+        craftingManager.addSaltomaruItem(saltBlock)
 
         blockManager.addSaltomaruBlock(saltBlock)
 

@@ -1,30 +1,35 @@
 package com.cocahonka.saltomaru.salt.block
 
 import com.cocahonka.saltomaru.base.SaltomaruBlock
+import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import com.cocahonka.saltomaru.managers.SaltomaruBlockManager
+import com.cocahonka.saltomaru.managers.SaltomaruCraftingManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Material
-import org.bukkit.Particle
-import org.bukkit.Sound
+import org.bukkit.*
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.ShapedRecipe
+import org.bukkit.plugin.Plugin
 
-class SaltBlock(private val saltPiece: SaltPiece) : SaltomaruBlock {
+class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlock, SaltomaruItemCraftable {
 
     override val displayName = "Солевой блок"
-    override val lore = "Salt helmet"
+    override val lore = "Salt block"
     override val loreComponent = Component.text(lore).color(NamedTextColor.GRAY)
     override val nameComponent = Component.text(displayName)
     override val material = Material.WHITE_GLAZED_TERRACOTTA
     override val customModelData = 1
     override val facing = BlockFace.NORTH
+    override val recipeKey = NamespacedKey(plugin, "salt_block")
 
     private val validTools = listOf(
         Material.NETHERITE_PICKAXE,
@@ -33,6 +38,40 @@ class SaltBlock(private val saltPiece: SaltPiece) : SaltomaruBlock {
         Material.GOLDEN_PICKAXE,
         Material.STONE_PICKAXE,
     )
+
+    init {
+        onInit()
+    }
+
+    override fun onInit() {
+        registerItemRecipe()
+    }
+
+    override fun registerItemRecipe(): Boolean {
+        val saltBlock = getNewItemStack()
+
+        val recipe = ShapedRecipe(recipeKey, saltBlock)
+        recipe.shape("XXX", "XXX", "XXX")
+        recipe.setIngredient('X', saltPiece.material)
+
+        return Bukkit.addRecipe(recipe)
+    }
+
+    override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
+        val recipe = event.recipe
+        val inventory = event.inventory
+        val player = event.viewers[0] as Player
+
+        if (recipe is Keyed && recipe.key == recipeKey) {
+            if (SaltomaruCraftingManager.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
+                inventory.result = getNewItemStack()
+            } else {
+                inventory.result = null
+                SaltomaruCraftingManager.retrievePlayerCraft(inventory, player)
+            }
+
+        }
+    }
 
     override fun getNewItemStack(amount: Int): ItemStack {
         val saltBlock = ItemStack(material, amount)
