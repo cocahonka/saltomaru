@@ -49,7 +49,8 @@ class SaltBlock(private val saltPiece: SaltPiece) : SaltomaruBlock() {
 
     private fun getRandomSaltPiecesAmount(fortuneLevel: Int): Int {
         val baseAmount = (1..3).random()
-        val extra = if (fortuneLevel > 0) (0..fortuneLevel).random() else 0
+        val validFortuneLevel = if (fortuneLevel > 3) 3 else fortuneLevel
+        val extra = if (validFortuneLevel > 0) (0..validFortuneLevel * 2).random() else 0
         return baseAmount + extra
     }
 
