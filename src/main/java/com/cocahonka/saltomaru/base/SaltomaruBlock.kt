@@ -5,6 +5,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityExplodeEvent
 
 abstract class SaltomaruBlock : SaltomaruItem() {
     abstract val facing: BlockFace
@@ -12,6 +13,8 @@ abstract class SaltomaruBlock : SaltomaruItem() {
     abstract fun onBlockBreak(event: BlockBreakEvent)
 
     abstract fun onBlockPlace(event: BlockPlaceEvent)
+
+    abstract fun onEntityExplode(event: EntityExplodeEvent)
 
     fun isValidBlock(block: Block): Boolean {
         if (block.type != material) {
