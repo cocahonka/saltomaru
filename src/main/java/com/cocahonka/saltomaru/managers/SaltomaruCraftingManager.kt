@@ -21,13 +21,12 @@ class SaltomaruCraftingManager {
             matrix: Array<out ItemStack?>,
             itemValidator: (ItemStack) -> Boolean
         ): Boolean {
-            return matrix.all { item ->
-                return if (item == null) {
-                    true
-                } else {
-                    itemValidator(item)
+            for (item in matrix) {
+                if(!(item == null || itemValidator(item))){
+                    return false
                 }
             }
+            return true
         }
 
         fun retrievePlayerCraft(inventory: CraftingInventory, player: Player){
