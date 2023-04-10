@@ -1,7 +1,6 @@
 package com.cocahonka.saltomaru.managers
 
 import com.cocahonka.saltomaru.base.SaltomaruBlock
-import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
 import com.google.common.collect.ImmutableList
 import org.bukkit.block.BlockFace
 

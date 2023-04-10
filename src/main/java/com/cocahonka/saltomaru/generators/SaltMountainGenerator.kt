@@ -8,7 +8,7 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
-import java.util.*
+import java.util.Random
 import kotlin.math.pow
 import kotlin.math.sqrt
 
