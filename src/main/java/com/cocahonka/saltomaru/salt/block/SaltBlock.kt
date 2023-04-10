@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.inventory.ItemStack
 
-class SaltBlock(private val saltPiece: SaltPiece) : SaltomaruBlock() {
+class SaltBlock(private val saltPiece: SaltPiece) : SaltomaruBlock {
 
     override val displayName = "Солевой блок"
     override val lore = "Salt helmet"
