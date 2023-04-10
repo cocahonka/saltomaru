@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.inventory.ItemStack
 
-class SaltBlock : SaltomaruBlock() {
+class SaltBlock(private val saltPiece: SaltPiece) : SaltomaruBlock() {
 
     override val displayName = "Солевой блок"
     override val lore = "Salt helmet"
@@ -26,8 +26,6 @@ class SaltBlock : SaltomaruBlock() {
     override val customModelData = 1
     override val facing = BlockFace.NORTH
 
-    // TODO: REMOVE HARDCODE
-    private val saltPiece = SaltPiece()
     private val validTools = listOf(
         Material.NETHERITE_PICKAXE,
         Material.DIAMOND_PICKAXE,

@@ -6,6 +6,7 @@ import com.cocahonka.saltomaru.generators.SaltMountainGenerator
 import com.cocahonka.saltomaru.listeners.*
 import com.cocahonka.saltomaru.salt.block.SaltBlock
 import com.cocahonka.saltomaru.salt.item.SaltHelmet
+import com.cocahonka.saltomaru.salt.item.SaltPiece
 import org.bukkit.plugin.java.JavaPlugin
 
 class Saltomaru : JavaPlugin() {
@@ -16,14 +17,17 @@ class Saltomaru : JavaPlugin() {
     override fun onEnable() {
         getLogger().info("\u001B[32m" + "Saltomaru by cocahonka!" +  "\u001B[0m")
 
-        craftingManager.addSaltomaruItem(SaltHelmet(this))
+        val saltPiece = SaltPiece()
+        val saltBlock = SaltBlock(saltPiece)
+        val saltHelmet = SaltHelmet(this, saltPiece)
 
-        val saltBlock = SaltBlock()
+        craftingManager.addSaltomaruItem(saltHelmet)
+
         blockManager.addSaltomaruBlock(saltBlock)
 
         server.pluginManager.registerEvents(CraftingListener(craftingManager),this)
         server.pluginManager.registerEvents(BlockBreakListener(blockManager),this)
-        server.pluginManager.registerEvents(BlockExplosionListener(),this)
+        server.pluginManager.registerEvents(BlockExplosionListener(blockManager),this)
         server.pluginManager.registerEvents(BlockPlaceListener(blockManager),this)
 
         val generator = SaltMountainGenerator(saltBlock)

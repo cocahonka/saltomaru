@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 
-class SaltHelmet(plugin: Plugin) : SaltomaruItemCraftable(plugin) {
+class SaltHelmet(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruItemCraftable(plugin) {
 
     override val displayName = "Солевая шапка"
     override val lore = "Salt helmet"
@@ -24,8 +24,6 @@ class SaltHelmet(plugin: Plugin) : SaltomaruItemCraftable(plugin) {
     override val material = Material.LEATHER_HELMET
     override val customModelData = 1
     override val recipeKey = NamespacedKey(plugin, "salt_helmet")
-
-    private val saltPiece = SaltPiece()
 
     init {
         onInit()
