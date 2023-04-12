@@ -29,6 +29,7 @@ class Saltomaru : JavaPlugin() {
 
         craftingManager.addSaltomaruItem(saltHelmet)
         craftingManager.addSaltomaruItem(saltBlock)
+        craftingManager.addSaltomaruItem(saltLeggings)
 
         blockManager.addSaltomaruBlock(saltBlock)
 
