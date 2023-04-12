@@ -1,7 +1,8 @@
-package com.cocahonka.saltomaru.salt.item
+package com.cocahonka.saltomaru.salt.armor
 
 import com.cocahonka.saltomaru.managers.SaltomaruCraftingManager
 import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
+import com.cocahonka.saltomaru.salt.item.SaltPiece
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit

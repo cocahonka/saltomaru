@@ -7,7 +7,8 @@ import com.cocahonka.saltomaru.generators.SaltMountainGenerator
 import com.cocahonka.saltomaru.listeners.*
 import com.cocahonka.saltomaru.managers.SaltomaruEventManager
 import com.cocahonka.saltomaru.salt.block.SaltBlock
-import com.cocahonka.saltomaru.salt.item.SaltHelmet
+import com.cocahonka.saltomaru.salt.armor.SaltHelmet
+import com.cocahonka.saltomaru.salt.armor.SaltLeggings
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -24,9 +25,11 @@ class Saltomaru : JavaPlugin() {
         val saltPiece = SaltPiece()
         val saltBlock = SaltBlock(this, saltPiece)
         val saltHelmet = SaltHelmet(this, saltPiece)
+        val saltLeggings = SaltLeggings(this, saltPiece)
 
         craftingManager.addSaltomaruItem(saltHelmet)
         craftingManager.addSaltomaruItem(saltBlock)
+        craftingManager.addSaltomaruItem(saltLeggings)
 
         blockManager.addSaltomaruBlock(saltBlock)
 
