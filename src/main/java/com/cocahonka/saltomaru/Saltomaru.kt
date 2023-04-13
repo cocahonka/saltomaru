@@ -3,6 +3,7 @@ package com.cocahonka.saltomaru
 import com.cocahonka.saltomaru.events.salt.TreeBarkSaltEvent
 import com.cocahonka.saltomaru.generators.SaltMountainGenerator
 import com.cocahonka.saltomaru.salt.armor.SaltBoots
+import com.cocahonka.saltomaru.salt.armor.SaltChestplate
 import com.cocahonka.saltomaru.salt.block.SaltBlock
 import com.cocahonka.saltomaru.salt.armor.SaltHelmet
 import com.cocahonka.saltomaru.salt.armor.SaltLeggings
@@ -32,6 +33,10 @@ class Saltomaru : JavaPlugin() {
             registerEvent(plugin)
         }
         val saltBoots = SaltBoots(this, saltPiece).apply {
+            registerItemRecipe()
+            registerEvent(plugin)
+        }
+        val saltChestplate = SaltChestplate(this, saltPiece).apply {
             registerItemRecipe()
             registerEvent(plugin)
         }
