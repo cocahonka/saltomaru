@@ -11,6 +11,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
@@ -26,13 +27,6 @@ class SaltHelmet(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruIt
     override val customModelData = 1
     override val recipeKey = NamespacedKey(plugin, "salt_helmet")
 
-    init {
-        onInit()
-    }
-
-    override fun onInit() {
-        registerItemRecipe()
-    }
 
     override fun getNewItemStack(amount: Int): ItemStack {
         val saltHelmet = ItemStack(material, amount)
@@ -47,7 +41,6 @@ class SaltHelmet(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruIt
         return saltHelmet
     }
 
-
     override fun registerItemRecipe(): Boolean {
         val saltHelmet = getNewItemStack()
 
@@ -58,7 +51,7 @@ class SaltHelmet(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruIt
         return Bukkit.addRecipe(recipe)
     }
 
-
+    @EventHandler
     override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
         val recipe = event.recipe
         val inventory = event.inventory

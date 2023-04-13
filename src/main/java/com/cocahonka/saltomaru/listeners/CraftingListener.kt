@@ -10,6 +10,6 @@ class CraftingListener(private val craftingManager: SaltomaruCraftingManager) : 
 
     @EventHandler
     fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
-        craftingManager.saltomaruItems.forEach { it.onPrepareItemCraft(event) }
+//        craftingManager.saltomaruItems.forEach { it.onPrepareItemCraft(event) }
     }
 }

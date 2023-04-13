@@ -9,6 +9,6 @@ class BlockExplosionListener(private val blockManager: SaltomaruBlockManager) : 
 
     @EventHandler
     fun onEntityExplode(event: EntityExplodeEvent) {
-       blockManager.saltomaruBlocks.forEach { it.onEntityExplode(event) }
+//       blockManager.saltomaruBlocks.forEach { it.onEntityExplode(event) }
     }
 }

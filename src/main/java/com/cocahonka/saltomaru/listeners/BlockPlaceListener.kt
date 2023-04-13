@@ -9,6 +9,6 @@ class BlockPlaceListener(private val blockManager: SaltomaruBlockManager) : List
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
-        blockManager.saltomaruBlocks.forEach { it.onBlockPlace(event) }
+//        blockManager.saltomaruBlocks.forEach { it.onBlockPlace(event) }
     }
 }

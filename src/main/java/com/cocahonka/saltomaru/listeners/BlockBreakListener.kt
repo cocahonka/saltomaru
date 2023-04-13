@@ -10,7 +10,7 @@ class BlockBreakListener(private val blockManager: SaltomaruBlockManager) : List
 
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
-        blockManager.saltomaruBlocks.forEach { it.onBlockBreak(event) }
+//        blockManager.saltomaruBlocks.forEach { it.onBlockBreak(event) }
     }
 
 }
