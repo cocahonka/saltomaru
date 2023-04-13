@@ -1,5 +1,6 @@
 package com.cocahonka.saltomaru.generators
 
+import com.cocahonka.saltomaru.events.salt.TreeBarkSaltEvent.Chances
 import com.cocahonka.saltomaru.salt.block.SaltBlock
 import org.bukkit.Location
 import org.bukkit.Material
@@ -12,9 +13,25 @@ import java.util.Random
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+/**
+ * Класс отвественный за генерацию солевых гор (новых структур)
+ * @param saltBlock объект [SaltBlock] солевой блок
+ * @property Chances содержить статические поля вероятности событий
+ * @property CHANCE_TO_SPAWN вероятность спавна структуры
+ * @property MEDIUM_MOUNTAIN_CHANCE вероятность спавна структуры среднего размера
+ * @property LARGE_MOUNTAIN_CHANCE вероятность спавна структуры большого размера
+ * @property CALCITE_CHANCE вероятность генерации вкраплений из [Material.CALCITE] в структуре
+ * @property TILT_FACTOR коэффициент наклона структуры
+ * @property MAX_HEIGHT_SPAWN максимальная высота спавна структуры
+ * @property MIN_HEIGHT_SPAWN минимальная высота спавна структуры
+ * @property MAX_HEIGHT_DIFFERENCE максимальное различие высот на поверхности пригодное для спавна
+ * @property validGroundBiomes массив надзменых биомов в которых может заспавниться структура
+ * @property validOceanBiomes массив океанских биомов в которых может заспавниться структура
+ * @property allValidBiomes массив включающий себя [validGroundBiomes] и [validOceanBiomes]
+ */
 class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator() {
 
-    companion object {
+    companion object Chances {
         private const val CHANCE_TO_SPAWN = 0.08
         private const val MEDIUM_MOUNTAIN_CHANCE = 0.3
         private const val LARGE_MOUNTAIN_CHANCE = 0.1
@@ -70,6 +87,13 @@ class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator()
         }
     }
 
+    /**
+     * Функция получения валидной локации для спавна структуры
+     * @param chunkX чанк по счету по оси X
+     * @param chunkZ чанк по счету по оси Z
+     * @param limitedRegion регион сервера пригодный для спавна структуры (предоставляется из [populate])
+     * @return [Location] если регион сервера позволяет спавн и если нашлось валидное место, иначе null
+     */
     private fun getStructureValidLocation(
         chunkX: Int,
         chunkZ: Int,
@@ -106,6 +130,13 @@ class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator()
         return null
     }
 
+    /**
+     * Функция генерации солевой горы по частям (верхняя часть и нижняя)
+     * @param limitedRegion регион сервера пригодный для спавна структуры (предоставляется из [populate])
+     * @param location место для генерации
+     * @param mountainSize коэффициент размера горы в зависимости от [Chances]
+     * @param random генератор рандомных вероятностей
+     */
     private fun generateSaltMountain(
         limitedRegion: LimitedRegion,
         location: Location,
@@ -131,6 +162,16 @@ class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator()
         }
     }
 
+    /**
+     * Функция генерирующая часть горы
+     * @param limitedRegion регион сервера пригодный для спавна структуры (предоставляется из [populate])
+     * @param location место для генерации
+     * @param currentRadius радиус основания горы
+     * @param y высота с которой начнется генерация
+     * @param tiltDirectionX коэффициент наклона по оси X
+     * @param tiltDirectionZ коэффициент наклона по оси Z
+     * @param random генератор рандомных вероятностей
+     */
     private fun generateMountainLayer(
         limitedRegion: LimitedRegion,
         location: Location,
@@ -168,7 +209,12 @@ class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator()
         }
     }
 
-
+    /**
+     * Фукнция для получения текущего блока солевой горы
+     *
+     * @param random генератор случайных вероятностей
+     * @return [BlockData] блока в зависимости от [CALCITE_CHANCE]
+     */
     private fun getRandomBlockData(random: Random): BlockData {
         return if (random.nextDouble() < CALCITE_CHANCE) {
             Material.CALCITE.createBlockData()

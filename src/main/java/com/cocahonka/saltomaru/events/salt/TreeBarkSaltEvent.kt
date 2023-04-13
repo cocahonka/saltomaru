@@ -12,14 +12,14 @@ import java.util.Random
 /**
  * Класс кастомного события (Выпадение соли из коры деревьев -> после обтёсывания древесины)
  * @param saltPiece объект [SaltPiece] (соль)
- * @property Chances содержить статические поля вероятностей событий
+ * @property Chances содержить статические поля вероятности событий
  * @property CHANCE_TO_DROP вероятность выпадения соли (верояность самого события)
  * @property MEDIUM_DROP_CHANCE вероятность выпадения среднего количества соли
  * @property LARGE_DROP_CHANCE вероятность выпадения большого количества соли
  * @property SUPER_LARGE_DROP_CHANCE верояность выпадения огромного количества соли
  * @property random генератор рандомных вероятностей
- * @property validStrippableLogs [Material] лист бревен пригодных для обтёсывания
- * @property validAxes [Material] лист пригодных топоров для обтёсываия
+ * @property validStrippableLogs [Material] массив бревен пригодных для обтёсывания
+ * @property validAxes [Material] массив пригодных топоров для обтёсываия
  */
 class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
     companion object Chances {
@@ -73,12 +73,7 @@ class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
     }
 
     /**
-     * Функция для получения рандомного количества соли
-     *
-     * В зависимости от рандомной вероятности дропу присваивается рандомное количество из диапазона
-     * чисел
-     *
-     * Диапазон определяется принадлежностью рандомной вероятности к вероятностям из [Chances]
+     * Функция для получения рандомного количества соли в зависомости от рандомной вероятности
      *
      * @return количество соли
      */
@@ -104,10 +99,6 @@ class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
 
     /**
      * Функция проверяющая является ли предмет в руке топором пригодным для события выпадения соли
-     *
-     * Валидация происходит по факту пренадлежности материала в руке к [validAxes], а также имеющего
-     * нужные зачарования
-     *
      * @param item предмет
      * @return возвращает true если материал предмета есть в [validAxes] и имеет нужные зачарования
      */
