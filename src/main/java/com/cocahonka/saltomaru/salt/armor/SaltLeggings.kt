@@ -30,7 +30,7 @@ class SaltLeggings(plugin: Plugin, private val saltPiece: SaltPiece) : Saltomaru
         val saltLeggings = ItemStack(material, amount)
         val meta = saltLeggings.itemMeta
 
-        meta.addEnchant(Enchantment.SWIFT_SNEAK, 2, true)
+        meta.addEnchant(Enchantment.SWIFT_SNEAK, 4, true)
         meta.lore(listOf(loreComponent))
         meta.displayName(nameComponent)
 
