@@ -6,6 +6,9 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Класс солевого предмета (соль)
+ */
 class SaltPiece : SaltomaruItem {
 
     override val displayName = "Кусочек соли"

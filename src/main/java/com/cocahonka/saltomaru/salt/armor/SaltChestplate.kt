@@ -17,6 +17,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 
+/**
+ * Класс солевого нагрудника
+ * @param plugin главный класс плагина
+ * @param saltPiece объект [SaltPiece] предмет соли
+ */
 class SaltChestplate(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruItemCraftable {
     override val displayName = "Солевой нагрудник"
     override val lore = "Salt Chestplate"

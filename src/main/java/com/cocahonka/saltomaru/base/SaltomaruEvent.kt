@@ -13,8 +13,9 @@ interface SaltomaruEvent : Listener {
 
     /**
      * Функция регистрации кастомного события
-     * @param plugin главный класс плагина
+     *
      * Функция должна быть вызвана в главном классе плагина
+     * @param plugin главный класс плагина
      */
     fun registerEvent(plugin: Plugin) {
         plugin.server.pluginManager.registerEvents(this, plugin)

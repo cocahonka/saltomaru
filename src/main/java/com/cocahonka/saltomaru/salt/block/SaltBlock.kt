@@ -21,6 +21,12 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 
+/**
+ * Класс солевого блока
+ * @param plugin главный класс плагина
+ * @param saltPiece объект [SaltPiece] предмет соли
+ * @property validTools массив [Material] пригодных для добычи блока
+ */
 class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
     SaltomaruBlock,
     SaltomaruBlockEvent,
@@ -66,6 +72,11 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
         return saltBlock
     }
 
+    /**
+     * Функция получения случайного количества соли из блока
+     * @param fortuneLevel уровень удачи на кирке
+     * @return количество соли
+     */
     private fun getRandomSaltPiecesAmount(fortuneLevel: Int): Int {
         val baseAmount = (1..3).random()
         val validFortuneLevel = if (fortuneLevel > 3) 3 else fortuneLevel
@@ -73,6 +84,10 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
         return baseAmount + extra
     }
 
+    /**
+     * Функция возращающая звук поломки блока
+     * @return звук поломки [Sound]
+     */
     private fun getBreakSound(): Sound {
         return Sound.BLOCK_BONE_BLOCK_BREAK
     }
