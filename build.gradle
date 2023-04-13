@@ -11,11 +11,11 @@ shadowJar {
     exclude 'META-INF/*.RSA'
     exclude 'META-INF/*.SF'
     archiveFileName = 'saltomaru.jar'
-    destinationDirectory  = file('../paper_server/plugins')
+    destinationDirectory = file('../paper_server/plugins')
 }
 
 group = 'com.cocahonka'
-version = '0.5.0'
+version = '0.5.1'
 
 build {
     dependsOn shadowJar
@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.20'
 }
 

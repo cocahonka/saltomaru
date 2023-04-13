@@ -14,6 +14,7 @@ class SaltPiece : SaltomaruItem {
     override val nameComponent = Component.text(displayName)
     override val material = Material.RABBIT_FOOT
     override val customModelData = 1
+    
     override fun getNewItemStack(amount: Int): ItemStack {
         val saltPiece = ItemStack(material, amount)
         val meta = saltPiece.itemMeta

@@ -53,22 +53,6 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
         return Bukkit.addRecipe(recipe)
     }
 
-    override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
-        val recipe = event.recipe
-        val inventory = event.inventory
-        val player = event.viewers[0] as Player
-
-        if (recipe is Keyed && recipe.key == recipeKey) {
-            if (SaltomaruCraftingUtils.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
-                inventory.result = getNewItemStack()
-            } else {
-                inventory.result = null
-                SaltomaruCraftingUtils.retrievePlayerCraft(inventory, player)
-            }
-
-        }
-    }
-
     override fun getNewItemStack(amount: Int): ItemStack {
         val saltBlock = ItemStack(material, amount)
         val meta = saltBlock.itemMeta
@@ -91,6 +75,23 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
 
     private fun getBreakSound(): Sound {
         return Sound.BLOCK_BONE_BLOCK_BREAK
+    }
+
+    @EventHandler
+    override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
+        val recipe = event.recipe
+        val inventory = event.inventory
+        val player = event.viewers[0] as Player
+
+        if (recipe is Keyed && recipe.key == recipeKey) {
+            if (SaltomaruCraftingUtils.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
+                inventory.result = getNewItemStack()
+            } else {
+                inventory.result = null
+                SaltomaruCraftingUtils.retrievePlayerCraft(inventory, player)
+            }
+
+        }
     }
 
     @EventHandler

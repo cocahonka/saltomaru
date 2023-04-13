@@ -10,6 +10,7 @@ interface SaltomaruBlock : SaltomaruItem {
     }
 
     val facing: BlockFace
+
     fun isValidBlock(block: Block): Boolean {
         if (block.type != material) {
             return false
