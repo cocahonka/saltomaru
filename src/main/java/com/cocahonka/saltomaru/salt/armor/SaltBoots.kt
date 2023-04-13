@@ -17,6 +17,12 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 
+/**
+ * Класс солевых ботинок
+ * @param plugin главный класс плагина
+ * @param saltPiece объект [SaltPiece] предмет соли
+ * @property secondRecipeKey второй ключ крафта (дополнительный рецепт)
+ */
 class SaltBoots(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruItemCraftable {
 
     override val displayName = "Солевые ботинки"
