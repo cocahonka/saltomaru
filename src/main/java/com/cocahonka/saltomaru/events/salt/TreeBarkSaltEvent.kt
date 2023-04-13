@@ -9,8 +9,20 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import java.util.Random
 
+/**
+ * Класс кастомного события (Выпадение соли из коры деревьев -> после обтёсывания древесины)
+ * @param saltPiece объект [SaltPiece] (соль)
+ * @property Chances содержить статические поля вероятностей событий
+ * @property CHANCE_TO_DROP вероятность выпадения соли (верояность самого события)
+ * @property MEDIUM_DROP_CHANCE вероятность выпадения среднего количества соли
+ * @property LARGE_DROP_CHANCE вероятность выпадения большого количества соли
+ * @property SUPER_LARGE_DROP_CHANCE верояность выпадения огромного количества соли
+ * @property random генератор рандомных вероятностей
+ * @property validStrippableLogs [Material] лист бревен пригодных для обтёсывания
+ * @property validAxes [Material] лист пригодных топоров для обтёсываия
+ */
 class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
-    companion object {
+    companion object Chances {
         private const val CHANCE_TO_DROP = 0.5
         private const val MEDIUM_DROP_CHANCE = 0.3
         private const val LARGE_DROP_CHANCE = 0.1
@@ -38,6 +50,13 @@ class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
         Material.NETHERITE_AXE,
     )
 
+    /**
+     * Событие взаимодействия игрока с окружающим миром
+     *
+     * В данном случае проверяется взаимодействовал ли игрок с блоком древесины
+     * и в случае когда рандомная вероятность меньше чем [CHANCE_TO_DROP]
+     * с дерева падает соль в количестве определенной функцией [getRandomSaltPieceAmount]
+     */
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val player = event.player
@@ -53,6 +72,16 @@ class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
         }
     }
 
+    /**
+     * Функция для получения рандомного количества соли
+     *
+     * В зависимости от рандомной вероятности дропу присваивается рандомное количество из диапазона
+     * чисел
+     *
+     * Диапазон определяется принадлежностью рандомной вероятности к вероятностям из [Chances]
+     *
+     * @return количество соли
+     */
     private fun getRandomSaltPieceAmount(): Int {
         val randomDouble = random.nextDouble()
         val amount = when {
@@ -64,10 +93,24 @@ class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
         return amount
     }
 
+    /**
+     * Функция проверяющая является ли [material] деревом которое можно обтесать
+     * @param material материал блока
+     * @return возвращает true если [material] есть в [validStrippableLogs]
+     */
     private fun isStrippableLog(material: Material): Boolean {
         return validStrippableLogs.contains(material)
     }
 
+    /**
+     * Функция проверяющая является ли предмет в руке топором пригодным для события выпадения соли
+     *
+     * Валидация происходит по факту пренадлежности материала в руке к [validAxes], а также имеющего
+     * нужные зачарования
+     *
+     * @param item предмет
+     * @return возвращает true если материал предмета есть в [validAxes] и имеет нужные зачарования
+     */
     private fun isValidAxe(item: ItemStack): Boolean {
         val material = item.type
         val isAxe = validAxes.contains(material)
