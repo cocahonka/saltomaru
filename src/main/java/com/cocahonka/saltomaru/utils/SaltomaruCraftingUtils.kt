@@ -1,21 +1,10 @@
-package com.cocahonka.saltomaru.managers
+package com.cocahonka.saltomaru.utils
 
-import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
-import com.google.common.collect.ImmutableList
 import org.bukkit.entity.Player
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
 
-class SaltomaruCraftingManager {
-
-    private val items = mutableListOf<SaltomaruItemCraftable>()
-    val saltomaruItems: ImmutableList<SaltomaruItemCraftable>
-        get() = ImmutableList.copyOf(items)
-
-    fun addSaltomaruItem(item: SaltomaruItemCraftable){
-        items.add(item)
-    }
-
+abstract class SaltomaruCraftingUtils {
     companion object {
         fun isValidMatrix(
             matrix: Array<out ItemStack?>,
@@ -48,6 +37,4 @@ class SaltomaruCraftingManager {
             }
         }
     }
-
-
 }

@@ -1,7 +1,7 @@
 package com.cocahonka.saltomaru.salt.armor
 
 import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
-import com.cocahonka.saltomaru.managers.SaltomaruCraftingManager
+import com.cocahonka.saltomaru.utils.SaltomaruCraftingUtils
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -11,6 +11,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
@@ -24,14 +25,6 @@ class SaltLeggings(plugin: Plugin, private val saltPiece: SaltPiece) : Saltomaru
     override val material = Material.LEATHER_LEGGINGS
     override val customModelData = 1
     override val recipeKey = NamespacedKey(plugin, "salt_leggings")
-
-    init {
-        onInit()
-    }
-
-    override fun onInit() {
-        registerItemRecipe()
-    }
 
     override fun getNewItemStack(amount: Int): ItemStack {
         val saltLeggings = ItemStack(material, amount)
@@ -57,18 +50,18 @@ class SaltLeggings(plugin: Plugin, private val saltPiece: SaltPiece) : Saltomaru
         return Bukkit.addRecipe(recipe)
     }
 
-
+    @EventHandler
     override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
         val recipe = event.recipe
         val inventory = event.inventory
         val player = event.viewers[0] as Player
 
         if (recipe is Keyed && recipe.key == recipeKey) {
-            if (SaltomaruCraftingManager.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
+            if (SaltomaruCraftingUtils.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
                 inventory.result = getNewItemStack()
             } else {
                 inventory.result = null
-                SaltomaruCraftingManager.retrievePlayerCraft(inventory, player)
+                SaltomaruCraftingUtils.retrievePlayerCraft(inventory, player)
             }
 
         }

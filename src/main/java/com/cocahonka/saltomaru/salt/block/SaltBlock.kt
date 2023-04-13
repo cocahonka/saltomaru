@@ -1,10 +1,10 @@
 package com.cocahonka.saltomaru.salt.block
 
 import com.cocahonka.saltomaru.base.SaltomaruBlock
+import com.cocahonka.saltomaru.base.SaltomaruBlockEvent
 import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
 import com.cocahonka.saltomaru.salt.item.SaltPiece
-import com.cocahonka.saltomaru.managers.SaltomaruBlockManager
-import com.cocahonka.saltomaru.managers.SaltomaruCraftingManager
+import com.cocahonka.saltomaru.utils.SaltomaruCraftingUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.*
@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityExplodeEvent
@@ -20,7 +21,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 
-class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlock, SaltomaruItemCraftable {
+class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
+    SaltomaruBlock,
+    SaltomaruBlockEvent,
+    SaltomaruItemCraftable {
 
     override val displayName = "Солевой блок"
     override val lore = "Salt block"
@@ -39,14 +43,6 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlo
         Material.STONE_PICKAXE,
     )
 
-    init {
-        onInit()
-    }
-
-    override fun onInit() {
-        registerItemRecipe()
-    }
-
     override fun registerItemRecipe(): Boolean {
         val saltBlock = getNewItemStack()
 
@@ -55,22 +51,6 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlo
         recipe.setIngredient('X', saltPiece.material)
 
         return Bukkit.addRecipe(recipe)
-    }
-
-    override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
-        val recipe = event.recipe
-        val inventory = event.inventory
-        val player = event.viewers[0] as Player
-
-        if (recipe is Keyed && recipe.key == recipeKey) {
-            if (SaltomaruCraftingManager.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
-                inventory.result = getNewItemStack()
-            } else {
-                inventory.result = null
-                SaltomaruCraftingManager.retrievePlayerCraft(inventory, player)
-            }
-
-        }
     }
 
     override fun getNewItemStack(amount: Int): ItemStack {
@@ -97,6 +77,24 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlo
         return Sound.BLOCK_BONE_BLOCK_BREAK
     }
 
+    @EventHandler
+    override fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
+        val recipe = event.recipe
+        val inventory = event.inventory
+        val player = event.viewers[0] as Player
+
+        if (recipe is Keyed && recipe.key == recipeKey) {
+            if (SaltomaruCraftingUtils.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
+                inventory.result = getNewItemStack()
+            } else {
+                inventory.result = null
+                SaltomaruCraftingUtils.retrievePlayerCraft(inventory, player)
+            }
+
+        }
+    }
+
+    @EventHandler
     override fun onBlockBreak(event: BlockBreakEvent) {
         val block = event.block
         if (isValidBlock(block)) {
@@ -124,6 +122,7 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlo
         }
     }
 
+    @EventHandler
     override fun onBlockPlace(event: BlockPlaceEvent) {
         if (event.block.type == material) {
             val item = event.itemInHand
@@ -133,14 +132,15 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruBlo
                 event.block.blockData = blockData
             } else {
                 val blockData = event.block.blockData as Directional
-                if(blockData.facing == facing) {
-                    blockData.facing = SaltomaruBlockManager.notUsedFace
+                if (blockData.facing == facing) {
+                    blockData.facing = SaltomaruBlock.notUsedFace
                     event.block.blockData = blockData
                 }
             }
         }
     }
 
+    @EventHandler
     override fun onEntityExplode(event: EntityExplodeEvent) {
         val brokenBlocks = event.blockList()
         for (block in brokenBlocks) {

@@ -6,11 +6,11 @@ import org.bukkit.inventory.ItemStack
 
 interface SaltomaruItem {
     val displayName: String
-     val lore: String
-     val loreComponent: TextComponent
-     val nameComponent: TextComponent
-     val material: Material
-     val customModelData: Int
+    val lore: String
+    val loreComponent: TextComponent
+    val nameComponent: TextComponent
+    val material: Material
+    val customModelData: Int
 
     fun isValidItem(item: ItemStack): Boolean {
         val meta = item.itemMeta

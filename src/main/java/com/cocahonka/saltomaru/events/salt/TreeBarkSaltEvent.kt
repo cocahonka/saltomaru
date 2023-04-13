@@ -1,15 +1,15 @@
 package com.cocahonka.saltomaru.events.salt
 
+import com.cocahonka.saltomaru.base.SaltomaruEvent
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import java.util.Random
 
-class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : Listener {
+class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
     companion object {
         private const val CHANCE_TO_DROP = 0.35
         private const val MEDIUM_DROP_CHANCE = 0.3
