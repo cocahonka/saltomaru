@@ -58,9 +58,10 @@ class SaltMountainGenerator(private val saltBlock: SaltBlock) : BlockPopulator()
             val startBlockData = limitedRegion.getBlockData(location)
 
             if (startBlockData.material != Material.WATER) {
+                val randomDouble = random.nextDouble()
                 val mountainSize = when {
-                    (random.nextDouble() < LARGE_MOUNTAIN_CHANCE) && validOceanBiomes.contains(currentBiome) -> 3
-                    random.nextDouble() < MEDIUM_MOUNTAIN_CHANCE -> 2
+                    (randomDouble < LARGE_MOUNTAIN_CHANCE) && validOceanBiomes.contains(currentBiome) -> 3
+                    randomDouble < MEDIUM_MOUNTAIN_CHANCE -> 2
                     else -> 1
                 }
 
