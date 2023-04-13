@@ -5,8 +5,11 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 
 interface SaltomaruBlock : SaltomaruItem {
-    val facing: BlockFace
+    companion object {
+        val notUsedFace = BlockFace.EAST
+    }
 
+    val facing: BlockFace
     fun isValidBlock(block: Block): Boolean {
         if (block.type != material) {
             return false

@@ -4,8 +4,7 @@ import com.cocahonka.saltomaru.base.SaltomaruBlock
 import com.cocahonka.saltomaru.base.SaltomaruBlockEvent
 import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
 import com.cocahonka.saltomaru.salt.item.SaltPiece
-import com.cocahonka.saltomaru.managers.SaltomaruBlockManager
-import com.cocahonka.saltomaru.managers.SaltomaruCraftingManager
+import com.cocahonka.saltomaru.utils.SaltomaruCraftingUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.*
@@ -60,11 +59,11 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
         val player = event.viewers[0] as Player
 
         if (recipe is Keyed && recipe.key == recipeKey) {
-            if (SaltomaruCraftingManager.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
+            if (SaltomaruCraftingUtils.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
                 inventory.result = getNewItemStack()
             } else {
                 inventory.result = null
-                SaltomaruCraftingManager.retrievePlayerCraft(inventory, player)
+                SaltomaruCraftingUtils.retrievePlayerCraft(inventory, player)
             }
 
         }
@@ -133,7 +132,7 @@ class SaltBlock(plugin: Plugin, private val saltPiece: SaltPiece) :
             } else {
                 val blockData = event.block.blockData as Directional
                 if (blockData.facing == facing) {
-                    blockData.facing = SaltomaruBlockManager.notUsedFace
+                    blockData.facing = SaltomaruBlock.notUsedFace
                     event.block.blockData = blockData
                 }
             }

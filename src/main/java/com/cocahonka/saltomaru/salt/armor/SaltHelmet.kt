@@ -1,6 +1,6 @@
 package com.cocahonka.saltomaru.salt.armor
 
-import com.cocahonka.saltomaru.managers.SaltomaruCraftingManager
+import com.cocahonka.saltomaru.utils.SaltomaruCraftingUtils
 import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import net.kyori.adventure.text.Component
@@ -58,11 +58,11 @@ class SaltHelmet(plugin: Plugin, private val saltPiece: SaltPiece) : SaltomaruIt
         val player = event.viewers[0] as Player
 
         if (recipe is Keyed && recipe.key == recipeKey) {
-            if (SaltomaruCraftingManager.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
+            if (SaltomaruCraftingUtils.isValidMatrix(inventory.matrix, saltPiece::isValidItem)) {
                 inventory.result = getNewItemStack()
             } else {
                 inventory.result = null
-                SaltomaruCraftingManager.retrievePlayerCraft(inventory, player)
+                SaltomaruCraftingUtils.retrievePlayerCraft(inventory, player)
             }
 
         }
