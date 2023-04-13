@@ -11,7 +11,7 @@ import java.util.Random
 
 class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
     companion object {
-        private const val CHANCE_TO_DROP = 0.35
+        private const val CHANCE_TO_DROP = 0.5
         private const val MEDIUM_DROP_CHANCE = 0.3
         private const val LARGE_DROP_CHANCE = 0.1
         private const val SUPER_LARGE_DROP_CHANCE = 0.02
@@ -54,10 +54,11 @@ class TreeBarkSaltEvent(private val saltPiece: SaltPiece) : SaltomaruEvent {
     }
 
     private fun getRandomSaltPieceAmount(): Int {
+        val randomDouble = random.nextDouble()
         val amount = when {
-            (random.nextDouble() < SUPER_LARGE_DROP_CHANCE) -> (20..42).random()
-            (random.nextDouble() < LARGE_DROP_CHANCE) -> (3..6).random()
-            random.nextDouble() < MEDIUM_DROP_CHANCE ->  (2..3).random()
+            randomDouble < SUPER_LARGE_DROP_CHANCE -> (20..42).random()
+            randomDouble < LARGE_DROP_CHANCE -> (3..6).random()
+            randomDouble < MEDIUM_DROP_CHANCE ->  (2..3).random()
             else -> 1
         }
         return amount
