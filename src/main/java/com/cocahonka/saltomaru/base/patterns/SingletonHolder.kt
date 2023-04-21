@@ -10,12 +10,15 @@ package com.cocahonka.saltomaru.base.patterns
  * @property factory функция-фабрика, используемая для создания новых экземпляров типа [T].
  * @property instance ссылка на экземпляр объекта синглтона или `null`, если он еще не был создан.
  *
- * @function getInstance возвращает существующий экземпляр синглтона или создает новый, если он еще не существует.
  */
 open class SingletonHolder<out T : Any, in A>(private val factory: (A) -> T) {
     @Volatile
     private var instance: T? = null
 
+    /**
+     * [getInstance] возвращает существующий экземпляр синглтона или создает новый, если он еще не существует.
+     * @param arg аргумент типа [А] для получения синглтона типа [T]
+     */
     fun getInstance(arg: A): T {
         val i = instance
         if (i != null) {

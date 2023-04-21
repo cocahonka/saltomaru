@@ -16,12 +16,14 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @constructor Создает новый реестр с предоставленной функцией [factory].
  *
- * @function getInstance возвращает экземпляр типа [T] для данного ключа типа [K]. Если экземпляр не
- * существует в кэше, он создается с использованием функции [factory] и добавляется в кэш.
  */
 open class Registry<out T : Any, in K>(private val factory: (K) -> T) {
     private val instances = ConcurrentHashMap<K, T>()
 
+    /**
+     * [getInstance] возвращает экземпляр типа [T] для данного ключа типа [K]. Если экземпляр не
+     * существует в кэше, он создается с использованием функции [factory] и добавляется в кэш.
+     */
     @Synchronized
     fun getInstance(key: K): T {
         return instances.getOrPut(key) { factory(key) }

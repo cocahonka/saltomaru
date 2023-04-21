@@ -10,18 +10,22 @@ import java.util.concurrent.ConcurrentLinkedQueue
  *
  * @property factory функция-фабрика, используемая для создания новых экземпляров типа [T].
  * @property pool очередь, которая хранит доступные экземпляры объектов типа [T].
- *
- * @function acquire извлекает доступный экземпляр объекта из пула или создает новый, если пул пуст.
- * @function release возвращает экземпляр объекта обратно в пул.
  */
 class ObjectPool<T>(private val factory: () -> T) {
     private val pool = ConcurrentLinkedQueue<T>()
 
-    fun acquire(): T {
+    /**
+     * [acquire] извлекает доступный экземпляр объекта из пула или создает новый, если пул пуст.
+     * @return экземпляр типа [T]
+     */
+    private fun acquire(): T {
         return pool.poll() ?: factory()
     }
 
-    fun release(item: T) {
+    /**
+     * [release] возвращает экземпляр объекта типа [T] обратно в пул.
+     */
+    private fun release(item: T) {
         pool.offer(item)
     }
 }
