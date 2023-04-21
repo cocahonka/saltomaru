@@ -1,6 +1,6 @@
 package com.cocahonka.saltomaru.events.salt
 
-import com.cocahonka.saltomaru.base.SaltomaruEvent
+import com.cocahonka.saltomaru.base.minecraft.SaltomaruEvent
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

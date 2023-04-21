@@ -1,4 +1,4 @@
-package com.cocahonka.saltomaru.base
+package com.cocahonka.saltomaru.base.patterns
 
 import java.util.concurrent.ConcurrentHashMap
 

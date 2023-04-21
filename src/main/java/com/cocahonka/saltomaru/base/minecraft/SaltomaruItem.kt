@@ -1,4 +1,4 @@
-package com.cocahonka.saltomaru.base
+package com.cocahonka.saltomaru.base.minecraft
 
 import net.kyori.adventure.text.TextComponent
 import org.bukkit.Material

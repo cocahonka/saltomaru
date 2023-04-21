@@ -1,4 +1,4 @@
-package com.cocahonka.saltomaru.base
+package com.cocahonka.saltomaru.base.minecraft
 
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace

@@ -1,6 +1,6 @@
 package com.cocahonka.saltomaru.salt.item
 
-import com.cocahonka.saltomaru.base.SaltomaruItem
+import com.cocahonka.saltomaru.base.minecraft.SaltomaruItem
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material

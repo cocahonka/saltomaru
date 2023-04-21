@@ -1,4 +1,4 @@
-package com.cocahonka.saltomaru.base
+package com.cocahonka.saltomaru.base.minecraft
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent

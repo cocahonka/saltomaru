@@ -1,6 +1,6 @@
 package com.cocahonka.saltomaru.salt.armor
 
-import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
+import com.cocahonka.saltomaru.base.minecraft.SaltomaruItemCraftable
 import com.cocahonka.saltomaru.utils.SaltomaruCraftingUtils
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import net.kyori.adventure.text.Component

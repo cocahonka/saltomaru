@@ -1,4 +1,4 @@
-package com.cocahonka.saltomaru.base
+package com.cocahonka.saltomaru.base.minecraft
 
 import org.bukkit.NamespacedKey
 import org.bukkit.event.EventHandler

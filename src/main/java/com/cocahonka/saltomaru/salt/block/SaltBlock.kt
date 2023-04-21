@@ -1,8 +1,8 @@
 package com.cocahonka.saltomaru.salt.block
 
-import com.cocahonka.saltomaru.base.SaltomaruBlock
-import com.cocahonka.saltomaru.base.SaltomaruBlockEvent
-import com.cocahonka.saltomaru.base.SaltomaruItemCraftable
+import com.cocahonka.saltomaru.base.minecraft.SaltomaruBlock
+import com.cocahonka.saltomaru.base.minecraft.SaltomaruBlockEvent
+import com.cocahonka.saltomaru.base.minecraft.SaltomaruItemCraftable
 import com.cocahonka.saltomaru.salt.item.SaltPiece
 import com.cocahonka.saltomaru.utils.SaltomaruCraftingUtils
 import net.kyori.adventure.text.Component
