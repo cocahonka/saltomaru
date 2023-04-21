@@ -18,14 +18,14 @@ class ObjectPool<T>(private val factory: () -> T) {
      * [acquire] извлекает доступный экземпляр объекта из пула или создает новый, если пул пуст.
      * @return экземпляр типа [T]
      */
-    private fun acquire(): T {
+    fun acquire(): T {
         return pool.poll() ?: factory()
     }
 
     /**
      * [release] возвращает экземпляр объекта типа [T] обратно в пул.
      */
-    private fun release(item: T) {
+    fun release(item: T) {
         pool.offer(item)
     }
 }
