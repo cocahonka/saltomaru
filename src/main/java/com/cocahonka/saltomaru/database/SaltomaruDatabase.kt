@@ -2,7 +2,7 @@ package com.cocahonka.saltomaru.database
 
 import com.cocahonka.saltomaru.Saltomaru
 import com.cocahonka.saltomaru.base.patterns.SingletonHolder
-import com.cocahonka.saltomaru.config.Config
+import com.cocahonka.saltomaru.config.SaltomaruConfig
 import org.jetbrains.exposed.sql.Database
 import java.sql.Connection
 import java.sql.DriverManager
@@ -16,13 +16,13 @@ class SaltomaruDatabase private constructor(plugin: Saltomaru) {
     private val connection: Connection
 
     init {
-        val dbPath = plugin.getStoragePath(Config.Database.FILE_NAME).absolutePath
-        val url = Config.Database.PRE_URL + dbPath
+        val dbPath = plugin.getStoragePath(SaltomaruConfig.SaltomaruDatabaseConfig.FILE_NAME).absolutePath
+        val url = SaltomaruConfig.SaltomaruDatabaseConfig.PRE_URL + dbPath
         Database.connect(
             url = url,
-            driver = Config.Database.DRIVER,
-            user = Config.Database.USER,
-            password = Config.Database.PASSWORD
+            driver = SaltomaruConfig.SaltomaruDatabaseConfig.DRIVER,
+            user = SaltomaruConfig.SaltomaruDatabaseConfig.USER,
+            password = SaltomaruConfig.SaltomaruDatabaseConfig.PASSWORD
         )
         connection = DriverManager.getConnection(url)
     }

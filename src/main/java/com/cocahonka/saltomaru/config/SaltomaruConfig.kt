@@ -3,12 +3,12 @@ package com.cocahonka.saltomaru.config
 /**
  * Объект для хранения конфигурации плагина.
  */
-object Config {
+object SaltomaruConfig {
 
     /**
      * Объект для хранения конфигурации базы данных.
      */
-    object Database {
+    object SaltomaruDatabaseConfig {
         const val USER = "saltomaru"
         const val PASSWORD = ""
         const val FILE_NAME = "saltomaru.db"
