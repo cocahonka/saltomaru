@@ -1,78 +1,121 @@
 package com.cocahonka.saltomaru.database
 
-import com.cocahonka.saltomaru.config.SaltomaruConfig
+import com.cocahonka.saltomaru.database.tables.CauldronsTable
+import com.cocahonka.saltomaru.database.tables.LocatesTable
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import strikt.api.expectThat
-import strikt.assertions.isEqualTo
-import java.io.File
-import java.sql.Connection
-import java.sql.DriverManager
+import strikt.api.expectThrows
+import kotlin.test.assertEquals
+
 
 class SaltomaruDatabaseTest {
-    private lateinit var connection: Connection
 
     @BeforeEach
     fun setUp() {
-        val dataFolder = File("src/test/out")
-        if (!dataFolder.exists()) {
-            dataFolder.mkdir()
-        }
-        val dbPath = File(dataFolder, "test.db").absolutePath
-        val url = SaltomaruConfig.Database.PRE_URL + dbPath
-        Database.connect(
-            url = url,
-            driver = SaltomaruConfig.Database.DRIVER,
-            user = SaltomaruConfig.Database.USER,
-            password = SaltomaruConfig.Database.PASSWORD
-        )
-        connection = DriverManager.getConnection(url)
-
-        resetDB()
-
-    }
-
-    private fun resetDB() {
-        transaction {
-            SchemaUtils.drop(Items)
-            SchemaUtils.createMissingTablesAndColumns(Items)
-        }
-    }
-
-    @AfterEach
-    fun tearDown() {
-        connection.close()
+        Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
     }
 
     @Test
-    fun `check transaction correct`() {
-        val item = Item(200, "Some name")
+    fun `one to one relationship`() {
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(Items)
-            Items.insert {
-                it[id] = 200
-                it[name] = "Some name"
-            }
-            val readItems = Items.selectAll().map {
-                val id = it[Items.id]
-                val name = it[Items.name]
-                Item(id, name)
-            }
-            expectThat(readItems).isEqualTo(listOf(item))
-        }
+            addLogger(StdOutSqlLogger)
 
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
+            LocatesTable.insert {
+                it[x] = 0
+                it[y] = 0
+                it[z] = 0
+                it[worldId] = 0
+                it[id] = cauldronId
+            }
+
+            expectThrows<ExposedSQLException> {
+                LocatesTable.insert {
+                    it[x] = 1
+                    it[y] = 1
+                    it[z] = 1
+                    it[worldId] = 1
+                    it[id] = cauldronId
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `unique set of values`() {
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
+            val cauldronId2 = CauldronsTable.insert { } get CauldronsTable.id
+            val cauldronId3 = CauldronsTable.insert { } get CauldronsTable.id
+            val cauldronId4 = CauldronsTable.insert { } get CauldronsTable.id
+
+            LocatesTable.insert {
+                it[x] = 0
+                it[y] = 0
+                it[z] = 0
+                it[worldId] = 0
+                it[id] = cauldronId
+            }
+
+            LocatesTable.insert {
+                it[x] = 0
+                it[y] = 0
+                it[z] = 0
+                it[worldId] = 1
+                it[id] = cauldronId2
+            }
+
+            LocatesTable.insert {
+                it[x] = 1
+                it[y] = 0
+                it[z] = 0
+                it[worldId] = 1
+                it[id] = cauldronId3
+            }
+
+            assertEquals(LocatesTable.selectAll().count(), 3)
+            expectThrows<ExposedSQLException> {
+                LocatesTable.insert {
+                    it[x] = 0
+                    it[y] = 0
+                    it[z] = 0
+                    it[worldId] = 0
+                    it[id] = cauldronId4
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `cascade delete linked location`(){
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
+
+            LocatesTable.insert {
+                it[x] = 0
+                it[y] = 0
+                it[z] = 0
+                it[worldId] = 0
+                it[id] = cauldronId
+            }
+
+            CauldronsTable.deleteWhere { CauldronsTable.id eq cauldronId }
+
+            assertEquals(LocatesTable.selectAll().count(), 0)
+        }
     }
 }
-
-object Items : Table() {
-    val id: Column<Int> = integer("id")
-    val name: Column<String> = varchar("name", 100)
-}
-
-data class Item(
-    val id: Int,
-    val name: String,
-)
