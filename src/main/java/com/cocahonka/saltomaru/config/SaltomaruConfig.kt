@@ -19,7 +19,8 @@ object SaltomaruConfig {
     object Minecraft {
         const val OVERWORLD_ID = 0
         const val NETHER_ID = 1
-        const val THE_END_ID = 2
+        const val END_ID = 2
+        val WORLD_IDS = listOf(OVERWORLD_ID, NETHER_ID, END_ID)
 
         const val MIN_X = -29_999_983
         const val MAX_X = 29_999_983
