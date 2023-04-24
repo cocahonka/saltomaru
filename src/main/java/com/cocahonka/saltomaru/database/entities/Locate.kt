@@ -2,6 +2,14 @@ package com.cocahonka.saltomaru.database.entities
 
 import com.cocahonka.saltomaru.config.SaltomaruConfig.Minecraft as Config
 
+/**
+ * Дата класс содержащий информацию о местоположении блока
+ * @param worldId id мира (см. [Config])
+ * @param x координата по оси x
+ * @param y координата по оси y
+ * @param z координата по оси z
+ * @throws IllegalArgumentException если значения не входят в диапазон допустимых (см. [Config])
+ */
 data class Locate(
     val worldId: Int,
     val x: Int,
