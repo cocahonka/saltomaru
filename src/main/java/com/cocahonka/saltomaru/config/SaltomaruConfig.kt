@@ -16,6 +16,10 @@ object SaltomaruConfig {
         const val PRE_URL = "jdbc:sqlite:"
     }
 
+    /**
+     * Объект для хранения константных значений майкнарфта
+     */
+
     object Minecraft {
         const val OVERWORLD_ID = 0
         const val NETHER_ID = 1
