@@ -16,13 +16,13 @@ class SaltomaruDatabase private constructor(plugin: Saltomaru) {
     private val connection: Connection
 
     init {
-        val dbPath = plugin.getStoragePath(SaltomaruConfig.SaltomaruDatabaseConfig.FILE_NAME).absolutePath
-        val url = SaltomaruConfig.SaltomaruDatabaseConfig.PRE_URL + dbPath
+        val dbPath = plugin.getStoragePath(SaltomaruConfig.Database.FILE_NAME).absolutePath
+        val url = SaltomaruConfig.Database.PRE_URL + dbPath
         Database.connect(
             url = url,
-            driver = SaltomaruConfig.SaltomaruDatabaseConfig.DRIVER,
-            user = SaltomaruConfig.SaltomaruDatabaseConfig.USER,
-            password = SaltomaruConfig.SaltomaruDatabaseConfig.PASSWORD
+            driver = SaltomaruConfig.Database.DRIVER,
+            user = SaltomaruConfig.Database.USER,
+            password = SaltomaruConfig.Database.PASSWORD
         )
         connection = DriverManager.getConnection(url)
     }

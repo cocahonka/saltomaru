@@ -1,4 +1,4 @@
-package saltomaru.database
+package com.cocahonka.saltomaru.database
 
 import com.cocahonka.saltomaru.config.SaltomaruConfig
 import org.jetbrains.exposed.sql.*
@@ -22,12 +22,12 @@ class SaltomaruDatabaseTest {
             dataFolder.mkdir()
         }
         val dbPath = File(dataFolder, "test.db").absolutePath
-        val url = SaltomaruConfig.SaltomaruDatabaseConfig.PRE_URL + dbPath
+        val url = SaltomaruConfig.Database.PRE_URL + dbPath
         Database.connect(
             url = url,
-            driver = SaltomaruConfig.SaltomaruDatabaseConfig.DRIVER,
-            user = SaltomaruConfig.SaltomaruDatabaseConfig.USER,
-            password = SaltomaruConfig.SaltomaruDatabaseConfig.PASSWORD
+            driver = SaltomaruConfig.Database.DRIVER,
+            user = SaltomaruConfig.Database.USER,
+            password = SaltomaruConfig.Database.PASSWORD
         )
         connection = DriverManager.getConnection(url)
 

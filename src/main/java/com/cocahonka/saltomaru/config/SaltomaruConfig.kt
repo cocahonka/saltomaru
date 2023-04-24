@@ -8,11 +8,32 @@ object SaltomaruConfig {
     /**
      * Объект для хранения конфигурации базы данных.
      */
-    object SaltomaruDatabaseConfig {
+    object Database {
         const val USER = "saltomaru"
         const val PASSWORD = ""
         const val FILE_NAME = "saltomaru.db"
         const val DRIVER = "org.sqlite.JDBC"
         const val PRE_URL = "jdbc:sqlite:"
+    }
+
+    object Minecraft {
+        const val OVERWORLD_ID = 0
+        const val NETHER_ID = 1
+        const val THE_END_ID = 2
+
+        const val MIN_X = -29_999_983
+        const val MAX_X = 29_999_983
+
+        const val MIN_Z = -29_999_983
+        const val MAX_Z = 29_999_983
+
+        const val MIN_OVERWORLD_Y = -64
+        const val MAX_OVERWORLD_Y = 319
+
+        const val MIN_NETHER_Y = 0
+        const val MAX_NETHER_Y = 255
+
+        const val MIN_END_Y = 0
+        const val MAX_END_Y = 255
     }
 }
