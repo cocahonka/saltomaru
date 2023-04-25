@@ -3,7 +3,7 @@ package com.cocahonka.saltomaru.database.tables
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import com.cocahonka.saltomaru.database.entities.Locate
-import com.cocahonka.saltomaru.database.base.Mappable
+import com.cocahonka.saltomaru.database.base.TableMappable
 import org.jetbrains.exposed.sql.ResultRow
 
 /**
@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.ResultRow
  * При удалении связанные записи удаляются согласно [ReferenceOption.CASCADE]
  * @property id уникальное значение ссылающееся на [CauldronsTable] (One-to-One)
  */
-object LocatesTable : IdTable<Int>("locate"), Mappable<Locate> {
+object LocatesTable : IdTable<Int>("locate"), TableMappable<Locate> {
     override val id = reference("id", CauldronsTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
 
     val worldId = integer("world_id")

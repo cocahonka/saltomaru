@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.Table
  * Интерфейс для расширения [Table] для возможности маппингов
  * @param E entity (data class) во что будут мапиться записи из [Table]
  */
-interface Mappable<E> {
+interface TableMappable<E> {
     /**
      * Функция маппинга [ResultRow] в объект типа [E]
      *
