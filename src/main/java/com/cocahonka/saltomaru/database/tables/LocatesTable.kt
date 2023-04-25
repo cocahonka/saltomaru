@@ -28,10 +28,10 @@ object LocatesTable : IdTable<Int>("locate"), Mappable<Locate> {
     }
 
     override fun fromRow(resultRow: ResultRow): Locate {
-        require(resultRow.hasValue(worldId)) { "row must have worldId value" }
-        require(resultRow.hasValue(x)) { "row must have x value" }
-        require(resultRow.hasValue(y)) { "row must have y value" }
-        require(resultRow.hasValue(z)) { "row must have z value" }
+        check(resultRow.hasValue(worldId)) { "row must have worldId value" }
+        check(resultRow.hasValue(x)) { "row must have x value" }
+        check(resultRow.hasValue(y)) { "row must have y value" }
+        check(resultRow.hasValue(z)) { "row must have z value" }
         return Locate(
             worldId = resultRow[worldId],
             x = resultRow[x],
