@@ -1,7 +1,10 @@
 package com.cocahonka.saltomaru.database
 
+import com.cocahonka.saltomaru.database.entities.Locate
 import com.cocahonka.saltomaru.database.tables.CauldronsTable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
+import com.cocahonka.saltomaru.database.utils.TableUtils.safeMap
+import com.cocahonka.saltomaru.database.utils.TableUtils.safeMapSingle
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -97,7 +100,7 @@ class SaltomaruDatabaseTest {
     }
 
     @Test
-    fun `cascade delete linked location`(){
+    fun `cascade delete linked location`() {
         transaction {
             addLogger(StdOutSqlLogger)
 
@@ -116,6 +119,33 @@ class SaltomaruDatabaseTest {
             CauldronsTable.deleteWhere { CauldronsTable.id eq cauldronId }
 
             assertEquals(LocatesTable.selectAll().count(), 0)
+        }
+    }
+
+    @Test
+    fun `locate mapper`() {
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
+            val locate = Locate(1, 2, 3, 4)
+
+            LocatesTable.insert {
+                it[x] = locate.x
+                it[y] = locate.y
+                it[z] = locate.z
+                it[worldId] = locate.worldId
+                it[id] = cauldronId
+            }
+
+            val locateFromRow = LocatesTable.safeMapSingle {
+                select { id eq cauldronId }.first()
+            }
+
+            assertEquals(locateFromRow, locate)
+
         }
     }
 }
