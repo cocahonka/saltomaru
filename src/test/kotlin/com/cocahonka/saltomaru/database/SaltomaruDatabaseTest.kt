@@ -148,4 +148,48 @@ class SaltomaruDatabaseTest {
 
         }
     }
+
+    @Test
+    fun `locate toInsertStatement`() {
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
+            val locate = Locate(1, 2, 3, 4)
+
+            LocatesTable.insert { locate.toInsertStatement(it, cauldronId) }
+
+            val locateFromRow = LocatesTable.safeMapSingle {
+                select {id eq cauldronId }.first()
+            }
+
+            assertEquals(locateFromRow, locate)
+        }
+    }
+
+    @Test
+    fun `locate toUpdateStatement`() {
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
+            val locate = Locate(1, 2, 3, 4)
+            val locateUpdated = Locate(2, 3, 4, 5)
+
+            LocatesTable.insert { locate.toInsertStatement(it, cauldronId) }
+
+            LocatesTable.update { locateUpdated.toUpdateStatement(it, cauldronId) }
+
+            val locatesFromRow = LocatesTable.safeMap {
+                selectAll()
+            }
+
+            assertEquals(locatesFromRow.size, 1)
+            assertEquals(locatesFromRow.first(), locateUpdated)
+        }
+    }
 }
