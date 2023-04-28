@@ -41,11 +41,13 @@ open class CachedPool<T : Any, in K : Any>(
         return if (item != null) {
             update(item, key)
             registry[key] = item
+            onCreate(item)
             item
         } else {
             val newItem = factory(key)
             registry[key] = newItem
             objectPool.offer(newItem)
+            onCreate(newItem)
             newItem
         }
     }
@@ -59,6 +61,24 @@ open class CachedPool<T : Any, in K : Any>(
      */
     @Synchronized
     fun removeInstance(key: K): T? {
-        return registry.remove(key)?.also { objectPool.offer(it) }
+        return registry.remove(key)?.also {
+            objectPool.offer(it)
+            onDelete(it)
+        }
     }
+
+    /**
+     * Фукнция, вызываемая после удаления объекта из реестра.
+     *
+     * @param item объект типа [T], который был удален
+     */
+    protected open fun onDelete(item: T) {}
+
+    /**
+     * Метод, вызываемый после создания или переиспользования объекта.
+     *
+     * @param item объект типа [T], который был создан или переиспользован
+     */
+    protected open fun onCreate(item: T) {}
+
 }
