@@ -28,4 +28,22 @@ open class Registry<out T : Any, in K>(private val factory: (K) -> T) {
     fun getInstance(key: K): T {
         return instances.getOrPut(key) { factory(key) }
     }
+
+    /**
+     * [removeInstance] удаляет экземпляр типа [T] для данного ключа типа [K]. Если экземпляр
+     * существует в кэше, он удаляется и возвращается. В противном случае возвращается `null`.
+     */
+    @Synchronized
+    fun removeInstance(key: K): T? {
+        return instances.remove(key)
+    }
+
+    /**
+     * [containsKey] проверяет, содержится ли экземпляр типа [T] для данного ключа типа [K] в кэше.
+     * Возвращает `true`, если ключ содержится в кэше, иначе `false`.
+     */
+    @Synchronized
+    fun containsKey(key: K): Boolean {
+        return instances.containsKey(key)
+    }
 }
