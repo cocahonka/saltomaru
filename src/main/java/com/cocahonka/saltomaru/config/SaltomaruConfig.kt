@@ -14,6 +14,9 @@ object SaltomaruConfig {
         const val FILE_NAME = "saltomaru.db"
         const val DRIVER = "org.sqlite.JDBC"
         const val PRE_URL = "jdbc:sqlite:"
+
+        private const val BATCHED_PARAMETERS = "rewriteBatchedStatements=true"
+        const val PARAMETERS = "?${BATCHED_PARAMETERS}"
     }
 
     /**

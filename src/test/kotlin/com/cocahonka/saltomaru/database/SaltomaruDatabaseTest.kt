@@ -1,5 +1,6 @@
 package com.cocahonka.saltomaru.database
 
+import com.cocahonka.saltomaru.config.SaltomaruConfig
 import com.cocahonka.saltomaru.database.entities.Locate
 import com.cocahonka.saltomaru.database.tables.CauldronsTable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
@@ -19,7 +20,7 @@ class SaltomaruDatabaseTest {
 
     @BeforeEach
     fun setUp() {
-        Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
+        Database.connect("jdbc:h2:mem:test${SaltomaruConfig.Database.PARAMETERS}", driver = "org.h2.Driver")
     }
 
     @Test

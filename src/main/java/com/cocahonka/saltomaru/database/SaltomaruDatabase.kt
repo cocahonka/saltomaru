@@ -17,7 +17,7 @@ class SaltomaruDatabase private constructor(plugin: Saltomaru) {
 
     init {
         val dbPath = plugin.getStoragePath(SaltomaruConfig.Database.FILE_NAME).absolutePath
-        val url = SaltomaruConfig.Database.PRE_URL + dbPath
+        val url = SaltomaruConfig.Database.PRE_URL + dbPath + SaltomaruConfig.Database.PARAMETERS
         Database.connect(
             url = url,
             driver = SaltomaruConfig.Database.DRIVER,
