@@ -17,6 +17,8 @@ object SaltomaruConfig {
 
         private const val BATCHED_PARAMETERS = "rewriteBatchedStatements=true"
         const val PARAMETERS = "?${BATCHED_PARAMETERS}"
+
+        const val BATCHED_CHUNK_SIZE = 100
     }
 
     /**
