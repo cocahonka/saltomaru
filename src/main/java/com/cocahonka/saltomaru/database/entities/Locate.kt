@@ -3,6 +3,7 @@ package com.cocahonka.saltomaru.database.entities
 import com.cocahonka.saltomaru.database.base.EntityMappable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.statements.BatchInsertStatement
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import com.cocahonka.saltomaru.config.SaltomaruConfig.Minecraft as Config
@@ -52,6 +53,15 @@ data class Locate(
             it[LocatesTable.id] = id
         }
 
+    override fun toBatchInsertStatement(statement: BatchInsertStatement, id: EntityID<Int>): BatchInsertStatement =
+        statement.also {
+            it[LocatesTable.worldId] = worldId
+            it[LocatesTable.x] = x
+            it[LocatesTable.y] = y
+            it[LocatesTable.z] = z
+            it[LocatesTable.id] = id
+        }
+
     override fun toUpdateStatement(statement: UpdateStatement, id: EntityID<Int>): UpdateStatement =
         statement.also {
             it[LocatesTable.worldId] = worldId
@@ -61,4 +71,5 @@ data class Locate(
             it[LocatesTable.id] = id
         }
 }
+
 

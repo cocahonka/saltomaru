@@ -4,6 +4,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.statements.BatchInsertStatement
 
 /**
  * Интерфейс для маппинга Entity (data class) в выражения баз данных
@@ -26,4 +27,13 @@ interface EntityMappable<I : Comparable<I>> {
      * @return [UpdateStatement] готовое выражение обновления
      */
     fun toUpdateStatement(statement: UpdateStatement, id: EntityID<I>): UpdateStatement
+
+    /**
+     * Функция перевода Entity (data class) в выражение массовой вставки в базу данных.
+     * @param statement выражение массовой вставки из [Table]
+     * @param id главный идентификатор
+     * @return [BatchInsertStatement] готовое выражение массовой вставки
+     */
+    fun toBatchInsertStatement(statement: BatchInsertStatement, id: EntityID<I>): BatchInsertStatement
+
 }
