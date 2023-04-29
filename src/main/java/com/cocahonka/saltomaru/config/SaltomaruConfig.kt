@@ -19,12 +19,13 @@ object SaltomaruConfig {
         const val PARAMETERS = "?${BATCHED_PARAMETERS}"
 
         const val BATCHED_CHUNK_SIZE = 100
+
+        const val SYNC_PERIOD_MS = 10_000L
     }
 
     /**
      * Объект для хранения константных значений майкнарфта
      */
-
     object Minecraft {
         const val OVERWORLD_ID = 0
         const val NETHER_ID = 1
@@ -45,5 +46,12 @@ object SaltomaruConfig {
 
         const val MIN_END_Y = 0
         const val MAX_END_Y = 255
+    }
+
+    /**
+     * Объект для хранения константных свойств ObjectPool'а
+     */
+    object ObjectPool {
+        const val CAULDRONS_INIT_SIZE = 30
     }
 }
