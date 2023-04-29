@@ -1,9 +1,21 @@
 package com.cocahonka.saltomaru.events.cauldron
 
 import com.cocahonka.saltomaru.base.patterns.CachedPool
+import com.cocahonka.saltomaru.config.SaltomaruConfig.ObjectPool as Config
 import com.cocahonka.saltomaru.database.entities.Locate
 import com.cocahonka.saltomaru.database.repositories.CauldronRepository
 
+/**
+ * Класс [Cauldron] представляет собой объект котла с определенным местоположением [Locate].
+ * Этот класс имеет закрытый конструктор и использует компаньон-объект [Cache] для кеширования и
+ * переиспользования объектов котлов.
+ *
+ * Компаньон-объект [Cache] наследует [CachedPool], предоставляя доступ к объектам [Cauldron] с
+ * помощью указанного местоположения [Locate]. Он также синхронизирует удаленные и созданные
+ * объекты котлов с базой данных через [CauldronRepository].
+ *
+ * @property locate местоположение котла типа [Locate]
+ */
 class Cauldron private constructor(locate: Locate) {
     var locate: Locate = locate
         private set
@@ -15,6 +27,16 @@ class Cauldron private constructor(locate: Locate) {
         }
     ) {
         private val repository = CauldronRepository()
+
+        init {
+            val mockLocate = Locate(0, 0, 0, 0)
+            val objects = List(Config.CAULDRONS_INIT_SIZE) { Cauldron(mockLocate) }
+            initPool(objects)
+
+            val data = repository.loadDataFromDatabase()
+            val instances = data.associateWith { Cauldron(it) }
+            initInstances(instances)
+        }
 
         private val deletedLocations: HashSet<Locate> = HashSet()
         private val createdLocations: HashSet<Locate> = HashSet()
@@ -28,6 +50,10 @@ class Cauldron private constructor(locate: Locate) {
             createdLocations.add(item.locate)
         }
 
+        /**
+         * Синхронизирует кешированные объекты [Cauldron] с базой данных.
+         * Загружает удаленные и созданные объекты котлов в [CauldronRepository].
+         */
         fun synchronizeCachedWithDatabase() {
             repository.synchronizeCachedWithDatabase(deletedLocations, createdLocations)
             deletedLocations.clear()

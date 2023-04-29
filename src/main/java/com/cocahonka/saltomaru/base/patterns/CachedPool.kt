@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * @param factory функция для создания новых объектов типа [T], принимающая аргумент типа [K]
  * @param update функция для обновления объектов типа [T] перед их использованием, принимающая объект типа [T] и аргумент типа [K]
  */
-open class CachedPool<T : Any, in K : Any>(
+abstract class CachedPool<T : Any, K : Any>(
     private val factory: (K) -> T,
     private val update: (T, K) -> Unit,
 ) {
@@ -66,6 +66,35 @@ open class CachedPool<T : Any, in K : Any>(
             onDelete(it)
         }
     }
+
+    /**
+     * Иницилизирует указанные объекты типа [T] в реестр, связывая их с соответствующими ключами типа [K].
+     *
+     * Функция предназначена для ЕДИНОРАЗОВОГО использования при иницилизации класса потомка.
+     *
+     * @param instances отображение ключей типа [K] на объекты типа [T], которые нужно добавить в реестр
+     * @exception IllegalStateException если функция была вызвана больше 1 раза
+     */
+    @Synchronized
+    protected fun initInstances(instances: Map<K, T>) {
+        if(registry.isNotEmpty()) throw IllegalStateException("initInstances must be called only once")
+        registry.putAll(instances)
+    }
+
+    /**
+     * Инициализирует объектный пул, заменяя текущие объекты в пуле переданными объектами.
+     * Возвращает `true`, если операция прошла успешно, и `false` в противном случае.
+     *
+     * @param objects список объектов типа [T] для инициализации пула
+     * @return `true`, если операция успешна, и `false` в противном случае
+     * @exception IllegalStateException если функция была вызвана больше 1 раза
+     */
+    @Synchronized
+    protected fun initPool(objects: List<T>): Boolean {
+        if(objectPool.isNotEmpty()) throw IllegalStateException("initPool must be called only once")
+        return objectPool.addAll(objects)
+    }
+
 
     /**
      * Фукнция, вызываемая после удаления объекта из реестра.
