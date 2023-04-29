@@ -7,6 +7,7 @@ import com.cocahonka.saltomaru.database.tables.LocatesTable
 import com.cocahonka.saltomaru.database.utils.TableUtils.getCombinedEitherCondition
 import com.cocahonka.saltomaru.database.utils.TableUtils.getUniqueExistingEntitiesFromPrompt
 import com.cocahonka.saltomaru.database.utils.TableUtils.safeGetIds
+import com.cocahonka.saltomaru.database.utils.TableUtils.safeMap
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -17,6 +18,16 @@ import org.jetbrains.exposed.sql.transactions.transaction
  * Отвечает за синхронизацию кэшированных данных с базой данных, включая удаление и добавление записей.
  */
 class CauldronRepository {
+
+    /**
+     * Загружает список местоположений [Locate] из базы данных, используя таблицу [LocatesTable].
+     *
+     * @return список объектов [Locate], загруженных из базы данных
+     */
+    fun loadDataFromDatabase(): List<Locate> =
+        transaction {
+            LocatesTable.safeMap { selectAll() }
+        }
 
     /**
      * Синхронизирует кэшированные данные с базой данных.
@@ -42,14 +53,15 @@ class CauldronRepository {
 
         for (chunk in chunked) {
             transaction {
+                if (chunk.isNotEmpty()) {
 
-                val existingLocationsIds = LocatesTable.safeGetIds {
-                    val conditions = chunk.map(::selectUniqueCondition)
-                    select(conditions.getCombinedEitherCondition()).toList()
+                    val existingLocationsIds = LocatesTable.safeGetIds {
+                        val conditions = chunk.map(::selectUniqueCondition)
+                        select(conditions.getCombinedEitherCondition()).toList()
+                    }
+
+                    CauldronsTable.deleteWhere { id inList existingLocationsIds }
                 }
-
-                CauldronsTable.deleteWhere { id inList existingLocationsIds }
-
             }
         }
     }
@@ -64,19 +76,20 @@ class CauldronRepository {
 
         for (chunk in chunked) {
             transaction {
+                if (chunk.isNotEmpty()) {
 
-                val existingLocations = LocatesTable.getUniqueExistingEntitiesFromPrompt(chunk)
+                    val existingLocations = LocatesTable.getUniqueExistingEntitiesFromPrompt(chunk)
 
-                val newLocations = chunk.filter { it !in existingLocations }
+                    val newLocations = chunk.filter { it !in existingLocations }
 
-                val newCauldronIds = CauldronsTable.safeGetIds { batchInsert(newLocations) { } }
+                    val newCauldronIds = CauldronsTable.safeGetIds { batchInsert(newLocations) { } }
 
-                LocatesTable.batchInsert(newLocations.indices) { index ->
-                    val location = newLocations[index]
-                    val id = newCauldronIds[index]
-                    location.toBatchInsertStatement(this, id)
+                    LocatesTable.batchInsert(newLocations.indices) { index ->
+                        val location = newLocations[index]
+                        val id = newCauldronIds[index]
+                        location.toBatchInsertStatement(this, id)
+                    }
                 }
-
             }
         }
     }
