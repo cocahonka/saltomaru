@@ -11,7 +11,19 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.transactions.transaction
 
+/**
+ * Репозиторий для работы с Котлами
+ *
+ * Отвечает за синхронизацию кэшированных данных с базой данных, включая удаление и добавление записей.
+ */
 class CauldronRepository {
+
+    /**
+     * Синхронизирует кэшированные данные с базой данных.
+     *
+     * @param deletedLocations множество [Locate] для удаления из базы данных.
+     * @param createdLocations множество [Locate] для добавления в базу данных.
+     */
     fun synchronizeCachedWithDatabase(
         deletedLocations: HashSet<Locate>,
         createdLocations: HashSet<Locate>,
@@ -20,6 +32,11 @@ class CauldronRepository {
         insert(createdLocations)
     }
 
+    /**
+     * Удаляет переданные [deletedLocations] из базы данных, при условии что такие записи есть.
+     *
+     * @param deletedLocations множество [Locate] для удаления.
+     */
     private fun delete(deletedLocations: HashSet<Locate>) {
         val chunked = deletedLocations.chunked(Config.BATCHED_CHUNK_SIZE)
 
@@ -37,6 +54,11 @@ class CauldronRepository {
         }
     }
 
+    /**
+     * Вставляет переданные [createdLocations] в базу данных, при условии что таких записей нету
+     *
+     * @param createdLocations множество [Locate] для добавления.
+     */
     private fun insert(createdLocations: HashSet<Locate>) {
         val chunked = createdLocations.chunked(Config.BATCHED_CHUNK_SIZE)
 
