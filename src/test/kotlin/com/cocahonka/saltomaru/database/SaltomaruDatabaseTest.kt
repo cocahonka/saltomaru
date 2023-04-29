@@ -2,6 +2,7 @@ package com.cocahonka.saltomaru.database
 
 import com.cocahonka.saltomaru.config.SaltomaruConfig
 import com.cocahonka.saltomaru.database.entities.Locate
+import com.cocahonka.saltomaru.database.repositories.CauldronRepository
 import com.cocahonka.saltomaru.database.tables.CauldronsTable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
 import com.cocahonka.saltomaru.database.utils.TableUtils.safeMap
@@ -191,6 +192,40 @@ class SaltomaruDatabaseTest {
 
             assertEquals(locatesFromRow.size, 1)
             assertEquals(locatesFromRow.first(), locateUpdated)
+        }
+    }
+
+    @Test
+    fun `insert method work properly`(){
+        transaction {
+            addLogger(StdOutSqlLogger)
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val locations = List(10) {
+                Locate(0, it, it + 1, it + 2)
+            }
+
+            val newCauldronIds = CauldronsTable.batchInsert(locations) { }.map { it[CauldronsTable.id] }
+
+            LocatesTable.batchInsert(locations.indices) { index ->
+                this[LocatesTable.id] = newCauldronIds[index]
+                this[LocatesTable.worldId] = locations[index].worldId
+                this[LocatesTable.x] = locations[index].x
+                this[LocatesTable.y] = locations[index].y
+                this[LocatesTable.z] = locations[index].z
+            }
+
+            assertEquals(locations, LocatesTable.safeMap { selectAll() })
+
+            val externalLocations = List(20) {
+                Locate(0, it, it + 1, it + 2)
+            }
+
+            val repo = CauldronRepository()
+
+            repo.synchronizeCachedWithDatabase(hashSetOf(), externalLocations.toHashSet())
+
+            assertEquals(externalLocations, LocatesTable.safeMap { selectAll() })
         }
     }
 }

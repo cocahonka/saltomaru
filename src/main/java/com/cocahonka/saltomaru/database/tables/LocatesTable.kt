@@ -23,7 +23,6 @@ object LocatesTable : IdTable<Int>("locate"), TableMappable<Locate> {
     val z = integer("z")
 
     init {
-        index(false, worldId, x, y, z)
         uniqueIndex(worldId, x, y, z)
     }
 
@@ -39,5 +38,4 @@ object LocatesTable : IdTable<Int>("locate"), TableMappable<Locate> {
             z = resultRow[z],
         )
     }
-
 }
