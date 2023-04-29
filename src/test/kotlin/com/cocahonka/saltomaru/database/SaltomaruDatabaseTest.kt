@@ -7,6 +7,7 @@ import com.cocahonka.saltomaru.database.tables.CauldronsTable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
 import com.cocahonka.saltomaru.database.utils.TableUtils.safeMap
 import com.cocahonka.saltomaru.database.utils.TableUtils.safeMapSingle
+import com.cocahonka.saltomaru.events.cauldron.Cauldron
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -164,7 +165,7 @@ class SaltomaruDatabaseTest {
             LocatesTable.insert { locate.toInsertStatement(it, cauldronId) }
 
             val locateFromRow = LocatesTable.safeMapSingle {
-                select {id eq cauldronId }.first()
+                select { id eq cauldronId }.first()
             }
 
             assertEquals(locateFromRow, locate)
@@ -196,7 +197,7 @@ class SaltomaruDatabaseTest {
     }
 
     @Test
-    fun `insert method work properly`(){
+    fun `insert method work properly`() {
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(LocatesTable, CauldronsTable)
@@ -226,6 +227,50 @@ class SaltomaruDatabaseTest {
             repo.synchronizeCachedWithDatabase(hashSetOf(), externalLocations.toHashSet())
 
             assertEquals(externalLocations, LocatesTable.safeMap { selectAll() })
+        }
+    }
+
+    @Test
+    fun `delete method work properly`() {
+        transaction {
+            addLogger(StdOutSqlLogger)
+            SchemaUtils.create(LocatesTable, CauldronsTable)
+
+            val locations = List(10) {
+                Locate(0, it, it + 1, it + 2)
+            }
+
+            val newCauldrons = CauldronsTable.batchInsert(locations) { }
+            val newCauldronIds = newCauldrons.map { it[CauldronsTable.id] }
+
+            LocatesTable.batchInsert(locations.indices) { index ->
+                this[LocatesTable.id] = newCauldronIds[index]
+                this[LocatesTable.worldId] = locations[index].worldId
+                this[LocatesTable.x] = locations[index].x
+                this[LocatesTable.y] = locations[index].y
+                this[LocatesTable.z] = locations[index].z
+            }
+
+            val deleteLocations = List(5) {
+                Locate(0, it, it + 1, it + 2)
+            }
+            val extraDeleteLocations = List(10) {
+                Locate(
+                    0,
+                    it + locations.size,
+                    it + 1 + locations.size,
+                    it + locations.size + 2
+                )
+            }
+
+            val repo = CauldronRepository()
+
+            repo.synchronizeCachedWithDatabase((deleteLocations + extraDeleteLocations).toHashSet(), hashSetOf())
+
+            println(newCauldrons.subList(5, newCauldrons.size))
+
+            assertEquals(locations.subList(5, locations.size), LocatesTable.safeMap { selectAll() })
+            assertEquals(5, CauldronsTable.selectAll().count())
         }
     }
 }
