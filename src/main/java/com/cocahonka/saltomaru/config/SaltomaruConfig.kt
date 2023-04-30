@@ -73,4 +73,8 @@ object SaltomaruConfig {
     object ObjectPool {
         const val CAULDRONS_INIT_SIZE = 30
     }
+
+    object Cauldron {
+        const val HEATING_TIME_MS = 5_000L
+    }
 }

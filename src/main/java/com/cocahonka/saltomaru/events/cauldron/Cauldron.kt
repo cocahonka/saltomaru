@@ -1,7 +1,7 @@
 package com.cocahonka.saltomaru.events.cauldron
 
 import com.cocahonka.saltomaru.base.patterns.CachedPool
-import com.cocahonka.saltomaru.config.SaltomaruConfig.ObjectPool as Config
+import com.cocahonka.saltomaru.config.SaltomaruConfig as Config
 import com.cocahonka.saltomaru.database.entities.Locate
 import com.cocahonka.saltomaru.database.repositories.CauldronRepository
 
@@ -30,7 +30,7 @@ class Cauldron private constructor(locate: Locate) {
 
         init {
             val mockLocate = Locate(0, 0, 0, 0)
-            val objects = List(Config.CAULDRONS_INIT_SIZE) { Cauldron(mockLocate) }
+            val objects = List(Config.ObjectPool.CAULDRONS_INIT_SIZE) { Cauldron(mockLocate) }
             initPool(objects)
 
             val data = repository.loadDataFromDatabase()
@@ -60,7 +60,6 @@ class Cauldron private constructor(locate: Locate) {
             deletedLocations.clear()
             createdLocations.clear()
         }
-
     }
 
 }

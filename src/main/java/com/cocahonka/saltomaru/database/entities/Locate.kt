@@ -9,7 +9,6 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import com.cocahonka.saltomaru.config.SaltomaruConfig.Minecraft as Config
 import com.cocahonka.saltomaru.config.SaltomaruConfig.Minecraft.WorldsIds
-import com.cocahonka.saltomaru.exceptions.UnknownEnvironmentException
 
 /**
  * Дата класс содержащий информацию о местоположении блока

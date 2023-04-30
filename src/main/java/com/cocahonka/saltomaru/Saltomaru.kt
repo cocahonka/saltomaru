@@ -63,7 +63,7 @@ class Saltomaru : JavaPlugin() {
             registerEvent(plugin)
         }
 
-        val treeBark = TreeBarkSaltEvent(saltPiece).apply {
+        val treeBarkEvent = TreeBarkSaltEvent(saltPiece).apply {
             registerEvent(plugin)
         }
 
@@ -102,7 +102,7 @@ class Saltomaru : JavaPlugin() {
      */
     private fun startPeriodicSync() {
         scope.launch {
-            while(isActive){
+            while (isActive) {
                 delay(SaltomaruConfig.Database.SYNC_PERIOD_MS)
                 logger.info("Synchronize...")
                 Cauldron.synchronizeCachedWithDatabase()
