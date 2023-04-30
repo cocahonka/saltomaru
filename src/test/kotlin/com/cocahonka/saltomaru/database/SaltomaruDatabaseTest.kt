@@ -1,13 +1,11 @@
 package com.cocahonka.saltomaru.database
 
-import com.cocahonka.saltomaru.config.SaltomaruConfig
 import com.cocahonka.saltomaru.database.entities.Locate
 import com.cocahonka.saltomaru.database.repositories.CauldronRepository
 import com.cocahonka.saltomaru.database.tables.CauldronsTable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
 import com.cocahonka.saltomaru.database.utils.TableUtils.safeMap
 import com.cocahonka.saltomaru.database.utils.TableUtils.safeMapSingle
-import com.cocahonka.saltomaru.events.cauldron.Cauldron
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -15,6 +13,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import strikt.api.expectThrows
+import java.util.*
+import kotlin.collections.LinkedHashSet
 import kotlin.test.assertEquals
 
 
@@ -22,7 +22,7 @@ class SaltomaruDatabaseTest {
 
     @BeforeEach
     fun setUp() {
-        Database.connect("jdbc:h2:mem:test${SaltomaruConfig.Database.PARAMETERS}", driver = "org.h2.Driver")
+        Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
     }
 
     @Test
@@ -32,12 +32,15 @@ class SaltomaruDatabaseTest {
 
             SchemaUtils.create(LocatesTable, CauldronsTable)
 
+            val uuid1 = UUID.randomUUID()
+            val uuid2 = UUID.randomUUID()
+
             val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
             LocatesTable.insert {
                 it[x] = 0
                 it[y] = 0
                 it[z] = 0
-                it[worldId] = 0
+                it[worldUUID] = uuid1
                 it[id] = cauldronId
             }
 
@@ -46,7 +49,7 @@ class SaltomaruDatabaseTest {
                     it[x] = 1
                     it[y] = 1
                     it[z] = 1
-                    it[worldId] = 1
+                    it[worldUUID] = uuid2
                     it[id] = cauldronId
                 }
             }
@@ -60,6 +63,9 @@ class SaltomaruDatabaseTest {
 
             SchemaUtils.create(LocatesTable, CauldronsTable)
 
+            val uuid1 = UUID.randomUUID()
+            val uuid2 = UUID.randomUUID()
+
             val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
             val cauldronId2 = CauldronsTable.insert { } get CauldronsTable.id
             val cauldronId3 = CauldronsTable.insert { } get CauldronsTable.id
@@ -69,7 +75,7 @@ class SaltomaruDatabaseTest {
                 it[x] = 0
                 it[y] = 0
                 it[z] = 0
-                it[worldId] = 0
+                it[worldUUID] = uuid1
                 it[id] = cauldronId
             }
 
@@ -77,7 +83,7 @@ class SaltomaruDatabaseTest {
                 it[x] = 0
                 it[y] = 0
                 it[z] = 0
-                it[worldId] = 1
+                it[worldUUID] = uuid2
                 it[id] = cauldronId2
             }
 
@@ -85,7 +91,7 @@ class SaltomaruDatabaseTest {
                 it[x] = 1
                 it[y] = 0
                 it[z] = 0
-                it[worldId] = 1
+                it[worldUUID] = uuid2
                 it[id] = cauldronId3
             }
 
@@ -95,7 +101,7 @@ class SaltomaruDatabaseTest {
                     it[x] = 0
                     it[y] = 0
                     it[z] = 0
-                    it[worldId] = 0
+                    it[worldUUID] = uuid1
                     it[id] = cauldronId4
                 }
             }
@@ -109,13 +115,15 @@ class SaltomaruDatabaseTest {
 
             SchemaUtils.create(LocatesTable, CauldronsTable)
 
+            val uuid = UUID.randomUUID()
+
             val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
 
             LocatesTable.insert {
                 it[x] = 0
                 it[y] = 0
                 it[z] = 0
-                it[worldId] = 0
+                it[worldUUID] = uuid
                 it[id] = cauldronId
             }
 
@@ -131,15 +139,16 @@ class SaltomaruDatabaseTest {
             addLogger(StdOutSqlLogger)
 
             SchemaUtils.create(LocatesTable, CauldronsTable)
+            val uuid = UUID.randomUUID()
 
             val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
-            val locate = Locate(1, 2, 3, 4)
+            val locate = Locate(uuid, 2, 3, 4)
 
             LocatesTable.insert {
                 it[x] = locate.x
                 it[y] = locate.y
                 it[z] = locate.z
-                it[worldId] = locate.worldId
+                it[worldUUID] = locate.worldUUID
                 it[id] = cauldronId
             }
 
@@ -158,9 +167,10 @@ class SaltomaruDatabaseTest {
             addLogger(StdOutSqlLogger)
 
             SchemaUtils.create(LocatesTable, CauldronsTable)
+            val uuid = UUID.randomUUID()
 
             val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
-            val locate = Locate(1, 2, 3, 4)
+            val locate = Locate(uuid, 2, 3, 4)
 
             LocatesTable.insert { locate.toInsertStatement(it, cauldronId) }
 
@@ -179,9 +189,12 @@ class SaltomaruDatabaseTest {
 
             SchemaUtils.create(LocatesTable, CauldronsTable)
 
+            val uuid1 = UUID.randomUUID()
+            val uuid2 = UUID.randomUUID()
+
             val cauldronId = CauldronsTable.insert { } get CauldronsTable.id
-            val locate = Locate(1, 2, 3, 4)
-            val locateUpdated = Locate(2, 3, 4, 5)
+            val locate = Locate(uuid1, 2, 3, 4)
+            val locateUpdated = Locate(uuid2, 3, 4, 5)
 
             LocatesTable.insert { locate.toInsertStatement(it, cauldronId) }
 
@@ -202,15 +215,17 @@ class SaltomaruDatabaseTest {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(LocatesTable, CauldronsTable)
 
+            val uuid = UUID.randomUUID()
+
             val locations = List(10) {
-                Locate(0, it, it + 1, it + 2)
+                Locate(uuid, it, it + 1, it + 2)
             }
 
             val newCauldronIds = CauldronsTable.batchInsert(locations) { }.map { it[CauldronsTable.id] }
 
             LocatesTable.batchInsert(locations.indices) { index ->
                 this[LocatesTable.id] = newCauldronIds[index]
-                this[LocatesTable.worldId] = locations[index].worldId
+                this[LocatesTable.worldUUID] = locations[index].worldUUID
                 this[LocatesTable.x] = locations[index].x
                 this[LocatesTable.y] = locations[index].y
                 this[LocatesTable.z] = locations[index].z
@@ -219,14 +234,16 @@ class SaltomaruDatabaseTest {
             assertEquals(locations, LocatesTable.safeMap { selectAll() })
 
             val externalLocations = List(20) {
-                Locate(0, it, it + 1, it + 2)
+                Locate(uuid, it, it + 1, it + 2)
             }
 
             val repo = CauldronRepository()
 
             repo.synchronizeCachedWithDatabase(hashSetOf(), externalLocations.toHashSet())
 
-            assertEquals(externalLocations, LocatesTable.safeMap { selectAll() })
+            val allDataFromDB = LocatesTable.safeMap { selectAll() }
+            assertEquals(externalLocations.size, allDataFromDB.size)
+            assertEquals(LinkedHashSet(externalLocations), LinkedHashSet(allDataFromDB))
         }
     }
 
@@ -236,8 +253,10 @@ class SaltomaruDatabaseTest {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(LocatesTable, CauldronsTable)
 
+            val uuid = UUID.randomUUID()
+
             val locations = List(10) {
-                Locate(0, it, it + 1, it + 2)
+                Locate(uuid, it, it + 1, it + 2)
             }
 
             val newCauldrons = CauldronsTable.batchInsert(locations) { }
@@ -245,18 +264,18 @@ class SaltomaruDatabaseTest {
 
             LocatesTable.batchInsert(locations.indices) { index ->
                 this[LocatesTable.id] = newCauldronIds[index]
-                this[LocatesTable.worldId] = locations[index].worldId
+                this[LocatesTable.worldUUID] = locations[index].worldUUID
                 this[LocatesTable.x] = locations[index].x
                 this[LocatesTable.y] = locations[index].y
                 this[LocatesTable.z] = locations[index].z
             }
 
             val deleteLocations = List(5) {
-                Locate(0, it, it + 1, it + 2)
+                Locate(uuid, it, it + 1, it + 2)
             }
             val extraDeleteLocations = List(10) {
                 Locate(
-                    0,
+                    uuid,
                     it + locations.size,
                     it + 1 + locations.size,
                     it + locations.size + 2

@@ -4,6 +4,8 @@ import com.cocahonka.saltomaru.base.patterns.CachedPool
 import com.cocahonka.saltomaru.config.SaltomaruConfig as Config
 import com.cocahonka.saltomaru.database.entities.Locate
 import com.cocahonka.saltomaru.database.repositories.CauldronRepository
+import java.util.*
+import kotlin.collections.HashSet
 
 /**
  * Класс [Cauldron] представляет собой объект котла с определенным местоположением [Locate].
@@ -29,7 +31,8 @@ class Cauldron private constructor(locate: Locate) {
         private val repository = CauldronRepository()
 
         init {
-            val mockLocate = Locate(0, 0, 0, 0)
+            val mockUUID = UUID(0,0)
+            val mockLocate = Locate(mockUUID, 0, 0, 0)
             val objects = List(Config.ObjectPool.CAULDRONS_INIT_SIZE) { Cauldron(mockLocate) }
             initPool(objects)
 
