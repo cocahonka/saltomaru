@@ -1,5 +1,8 @@
 package com.cocahonka.saltomaru.config
 
+import com.cocahonka.saltomaru.exceptions.UnknownEnvironmentException
+import org.bukkit.World
+
 /**
  * Объект для хранения конфигурации плагина.
  */
@@ -15,8 +18,8 @@ object SaltomaruConfig {
         const val DRIVER = "org.sqlite.JDBC"
         const val PRE_URL = "jdbc:sqlite:"
 
-        private const val BATCHED_PARAMETERS = "rewriteBatchedStatements=true"
-        const val PARAMETERS = "?${BATCHED_PARAMETERS}"
+        private const val FOREIGN_PARAMETER = "foreign_keys=on"
+        const val PARAMETERS = "?$FOREIGN_PARAMETER"
 
         const val BATCHED_CHUNK_SIZE = 100
 
@@ -27,10 +30,11 @@ object SaltomaruConfig {
      * Объект для хранения константных значений майкнарфта
      */
     object Minecraft {
-        const val OVERWORLD_ID = 0
-        const val NETHER_ID = 1
-        const val END_ID = 2
-        val WORLD_IDS = listOf(OVERWORLD_ID, NETHER_ID, END_ID)
+        enum class WorldsIds(val id: Int) {
+            OVERWORLD_ID(0),
+            NETHER_ID(1),
+            END_ID(2);
+        }
 
         const val MIN_X = -29_999_983
         const val MAX_X = 29_999_983
@@ -46,6 +50,21 @@ object SaltomaruConfig {
 
         const val MIN_END_Y = 0
         const val MAX_END_Y = 255
+
+        /**
+         * Возвращает идентификатор мира, соответствующий указанной мировой среде [environment].
+         *
+         * @param environment мировая среда, для которой нужно определить идентификатор мира
+         * @return идентификатор мира, соответствующий указанной мировой среде
+         * @throws UnknownEnvironmentException если передана неизвестная мировая среда
+         */
+        fun getWorldIdFromEnvironment(environment: World.Environment) =
+            when (environment) {
+                World.Environment.NORMAL -> WorldsIds.OVERWORLD_ID.id
+                World.Environment.NETHER -> WorldsIds.NETHER_ID.id
+                World.Environment.THE_END -> WorldsIds.END_ID.id
+                World.Environment.CUSTOM -> throw UnknownEnvironmentException(environment)
+            }
     }
 
     /**

@@ -42,6 +42,7 @@ class Cauldron private constructor(locate: Locate) {
         private val createdLocations: HashSet<Locate> = HashSet()
 
         override fun onDelete(item: Cauldron) {
+            createdLocations.remove(item.locate)
             deletedLocations.add(item.locate)
         }
 
@@ -59,6 +60,7 @@ class Cauldron private constructor(locate: Locate) {
             deletedLocations.clear()
             createdLocations.clear()
         }
+
     }
 
 }
