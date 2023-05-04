@@ -2,6 +2,7 @@ package com.cocahonka.saltomaru.database.entities
 
 import com.cocahonka.saltomaru.database.base.EntityMappable
 import com.cocahonka.saltomaru.database.tables.LocatesTable
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.statements.BatchInsertStatement
@@ -24,16 +25,27 @@ data class Locate(
     val z: Int,
 ) : EntityMappable<Int> {
 
-    /**
-     * Создает объект [Locate] из указанной [Location].
-     * @param location объект [Location] для преобразования
-     * @return объект [Locate], созданный на основе указанной [location]
-     */
-    constructor(location: Location) : this(
-        worldUUID = location.world.uid,
-        x = location.blockX,
-        y = location.blockY,
-        z = location.blockZ
+    companion object {
+
+        /**
+         * Создает объект [Locate] из указанной [Location].
+         * @param location объект [Location] для преобразования
+         * @return объект [Locate], созданный на основе указанной [location]
+         */
+        fun fromLocation(location: Location) = Locate(
+            worldUUID = location.world.uid,
+            x = location.blockX,
+            y = location.blockY,
+            z = location.blockZ
+        )
+
+    }
+
+    fun toLocation() = Location(
+        Bukkit.getWorld(worldUUID),
+        x.toDouble(),
+        y.toDouble(),
+        z.toDouble()
     )
 
     override fun toInsertStatement(statement: InsertStatement<Number>, id: EntityID<Int>): InsertStatement<Number> =
