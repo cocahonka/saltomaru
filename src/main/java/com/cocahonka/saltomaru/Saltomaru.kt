@@ -101,6 +101,8 @@ class Saltomaru : JavaPlugin() {
      * Интервал синхронизации определяется в [SaltomaruConfig.Database.SYNC_PERIOD_MS].
      */
     private fun startPeriodicSync() {
+        logger.info("Loading data from db...")
+        Cauldron.synchronizeCachedWithDatabase()
         scope.launch {
             while (isActive) {
                 delay(SaltomaruConfig.Database.SYNC_PERIOD_MS)
