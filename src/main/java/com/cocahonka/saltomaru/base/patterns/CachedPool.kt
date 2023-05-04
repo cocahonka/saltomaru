@@ -77,7 +77,7 @@ abstract class CachedPool<T : Any, K : Any>(
      */
     @Synchronized
     protected fun initInstances(instances: Map<K, T>) {
-        check(registry.isNotEmpty()) { "initInstances must be called only once" }
+        check(registry.isEmpty()) { "initInstances must be called only once" }
         registry.putAll(instances)
     }
 
@@ -91,7 +91,7 @@ abstract class CachedPool<T : Any, K : Any>(
      */
     @Synchronized
     protected fun initPool(objects: List<T>): Boolean {
-        check(objectPool.isNotEmpty()) { "initPool must be called only once" }
+        check(objectPool.isEmpty()) { "initPool must be called only once" }
         return objectPool.addAll(objects)
     }
 
